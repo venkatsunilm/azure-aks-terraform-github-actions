@@ -24,7 +24,7 @@ provider "azurerm" {
 
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
-  location = var.azure_region
+  location = var.location
 
     tags = {
       Environment = "Terraform Getting Started"
@@ -33,11 +33,17 @@ resource "azurerm_resource_group" "rg" {
 
 }
 
-# Create a virtual network
-resource "azurerm_virtual_network" "vnet" {
-  name                = var.azure_vnet_name
-  address_space       = ["10.0.0.0/16"]
-  location            = var.azure_region
-  resource_group_name = azurerm_resource_group.rg.name
+module "virtual-nework" {
+
+  source = "./modules/virtual-network"
+
+  virtual_network_name = var.virtual_network_name
+  resource_group_name = var.resource_group_name
+  location = var.location
+  virtual_network_address_space = var.virtual_network_address_space
+  subnet_name = var.subnet_name
+  subnet_address_prefix = var.subnet_address_prefix
+
 }
+
 
