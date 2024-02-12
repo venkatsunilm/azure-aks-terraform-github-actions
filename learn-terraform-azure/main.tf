@@ -41,7 +41,7 @@ module "virtual-nework" {
   location = var.location
   virtual_network_address_space = var.virtual_network_address_space
   subnet_name = var.subnet_name
-  subnet_address_prefix = var.subnet_address_prefix
+  subnet_address_prefix = var.virtual_network_address_space
 
 }
 
