@@ -20,7 +20,7 @@ variable "virtual_network_address_space" {
 
 variable "subnet_name" {
     type = string
-    description = "name of the subnet"
+    description = "name of the subnet."
 }
 
 variable "subnet_address_prefix" {
