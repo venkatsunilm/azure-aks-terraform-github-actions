@@ -34,7 +34,6 @@ resource "azurerm_resource_group" "rg" {
 }
 
 module "virtual-nework" {
-
   source = "./modules/virtual-network"
 
   virtual_network_name = var.virtual_network_name
