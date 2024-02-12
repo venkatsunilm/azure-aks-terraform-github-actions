@@ -47,6 +47,33 @@ module "virtual-nework" {
 
 module "network-interface" {
   source = "./modules/network-interface"
+<<<<<<< HEAD
+=======
+
+  vmname = var.vmname
+  location = var.location
+  resource_group_name = var.resource_group_name
+  subnet_id = module.virtual-nework.subnet_id
+}
+
+module "virtual-machine" {
+    source = "./modules/virtual-machine"
+    vmname                  = var.vmname
+    location                = var.location
+    resource_group_name     = var.resource_group_name
+    network_interface_ids   = [module.network-interface.nic_id]
+    vm_size                 = var.vm_size
+    os_disk_type            = var.os_disk_type
+    admin_usename           = var.admin_usename
+    admin_password          = var.admin_password
+    image_publisher         = var.image_publisher
+    image_offer             = var.image_offer
+    image_sku               = var.image_sku
+}
+  
+}
+
+>>>>>>> fbf60d6 (Adding VM and NIC modules and referring it from the root module)
 
   vmname = var.vmname
   location = var.location
