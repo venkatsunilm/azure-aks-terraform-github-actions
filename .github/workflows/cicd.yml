@@ -5,12 +5,12 @@ on:
     branches:
       - develop
       #   - staging
-      - master
+      - main
   push:
     branches:
       - develop
       #   - staging
-      - master
+      - main
 
 jobs:
   terraform:
@@ -19,17 +19,17 @@ jobs:
     # Specify environment based on the branch
     environment:
       # Automatically assign the environment based on the branch
-      name: ${{ github.ref == 'refs/heads/develop' && 'develop' || github.ref == 'refs/heads/staging' && 'staging' || github.ref == 'refs/heads/main' && 'prod' }}
+      name: ${{ github.ref == 'refs/heads/develop' && 'development' || github.ref == 'refs/heads/main' && 'production' }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v3
 
-      - name: Setup Azure CLI
-        uses: Azure/setup-azure@v1
+      - name: Install azd
+        uses: Azure/setup-azd@v1.0.0
 
       # Terraform Init
       - name: Terraform Init
