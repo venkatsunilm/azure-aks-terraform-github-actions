@@ -36,9 +36,16 @@ module "networking" {
   location            = azurerm_resource_group.rg.location
 }
 
+# Generate a random suffix for the storage account name
+resource "random_string" "storage_suffix" {
+  length  = 6
+  special = false
+  upper   = false
+}
+
 module "storage" {
   source               = "../../modules/storage"
-  storage_account_name = "sa${var.environment}"
+  storage_account_name = "sa${var.environment}${random_string.storage_suffix.result}"
   resource_group_name  = azurerm_resource_group.rg.name
   environment          = var.environment
   location             = azurerm_resource_group.rg.location
