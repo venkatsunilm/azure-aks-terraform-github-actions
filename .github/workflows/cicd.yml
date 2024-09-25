@@ -4,57 +4,53 @@ on:
   pull_request:
     branches:
       - develop
-      #   - staging
       - main
   push:
     branches:
       - develop
-      #   - staging
       - main
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
 
+    # Automatically select environment based on branch
     environment:
-      # Automatically assign the environment based on the branch
       name: ${{ github.ref == 'refs/heads/develop' && 'development' || github.ref == 'refs/heads/main' && 'production' }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v1
 
-      # - name: Install azd
-      #   uses: Azure/setup-azd@v1.0.0
-
-      # Terraform Init
+      # Navigate to the correct environment directory (for development or production)
       - name: Terraform Init
         run: terraform init
+        working-directory: environments/${{ github.ref == 'refs/heads/develop' && 'development' || 'production' }} # Navigate to the correct directory
         env:
-          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
-      # Plan for develop, staging, and main branches
-      - name: Terraform Plan for Pull Request
+      - name: Terraform Plan
         if: github.event_name == 'pull_request'
         run: terraform plan
+        working-directory: environments/${{ github.ref == 'refs/heads/develop' && 'development' || 'production' }} # Navigate to the correct directory
         env:
-          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
-      # Apply only on push to develop, staging, and main branches
-      - name: Terraform Apply for Merged Changes
+      - name: Terraform Apply
         if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve
+        working-directory: environments/${{ github.ref == 'refs/heads/develop' && 'development' || 'production' }} # Navigate to the correct directory
         env:
-          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
