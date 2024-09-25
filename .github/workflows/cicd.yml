@@ -16,7 +16,6 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
 
-    # Specify environment based on the branch
     environment:
       # Automatically assign the environment based on the branch
       name: ${{ github.ref == 'refs/heads/develop' && 'development' || github.ref == 'refs/heads/main' && 'production' }}
@@ -28,8 +27,8 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Install azd
-        uses: Azure/setup-azd@v1.0.0
+      # - name: Install azd
+      #   uses: Azure/setup-azd@v1.0.0
 
       # Terraform Init
       - name: Terraform Init
@@ -52,7 +51,7 @@ jobs:
 
       # Apply only on push to develop, staging, and main branches
       - name: Terraform Apply for Merged Changes
-        if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve
         env:
           ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
