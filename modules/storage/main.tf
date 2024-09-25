@@ -22,4 +22,8 @@ resource "azurerm_storage_account" "storage" {
     environment = var.environment
   }
 
+  timeouts {
+    create = "30m" # Set a 30-minute timeout for storage account creation
+  }
+
 }
