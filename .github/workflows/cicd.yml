@@ -42,7 +42,6 @@ jobs:
           echo "NODE_COUNT: $TF_VAR_NODE_COUNT"
           echo "LOCATION: $TF_VAR_LOCATION"
           echo "ENVIRONMENT: $TF_VAR_ENVIRONMENT"
-          echo "SUBSCRIPTION_ID: $TF_VAR_SUBSCRIPTION_ID"
 
       # Mask sensitive secrets while printing
       - name: Print sensitive values (masked)
