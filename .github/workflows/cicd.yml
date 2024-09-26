@@ -9,14 +9,15 @@ on:
     branches:
       - develop
       - main
+      - actions_*
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
 
-    # Automatically select environment based on branch
+    # Automatically choose the environment: default is "development", use "production" for the "main" branch
     environment:
-      name: ${{ github.ref == 'refs/heads/develop' && 'development' || github.ref == 'refs/heads/main' && 'production' }}
+      name: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
 
     env:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
@@ -25,13 +26,33 @@ jobs:
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
       # Terraform variables are pulled from GitHub Environment Variables
-      TF_VAR_location: ${{ vars.TF_VAR_location }}
-      TF_VAR_node_count: ${{ vars.TF_VAR_node_count }}
-      TF_VAR_environment: ${{ vars.TF_VAR_environment }}
+
+      TF_VAR_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      TF_VAR_LOCATION: ${{ vars.TF_VAR_LOCATION }}
+      TF_VAR_NODE_COUNT: ${{ vars.TF_VAR_NODE_COUNT }}
+      TF_VAR_ENVIRONMENT: ${{ vars.TF_VAR_ENVIRONMENT }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      # Print environment variables (Non-sensitive values)
+      - name: Print environment variables
+        run: |
+          echo "NODE_COUNT: $TF_VAR_NODE_COUNT"
+          echo "LOCATION: $TF_VAR_LOCATION"
+          echo "ENVIRONMENT: $TF_VAR_ENVIRONMENT"
+          echo "SUBSCRIPTION_ID: $TF_VAR_SUBSCRIPTION_ID"
+
+      # Mask sensitive secrets while printing
+      - name: Print sensitive values (masked)
+        run: |
+          echo "CLIENT_ID: $ARM_CLIENT_ID"
+          echo "CLIENT_SECRET: [MASKED]"
+          echo "TENANT_ID: $ARM_TENANT_ID"
+          echo "SUBSCRIPTION_ID: $ARM_SUBSCRIPTION_ID"
+        env:
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1

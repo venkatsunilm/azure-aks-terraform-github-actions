@@ -2,12 +2,13 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "=4.3.0"
+      version = "=4.0.1"
     }
   }
 }
 
 provider "azurerm" {
+  subscription_id = var.subscription_id
   features {
     resource_group {
       prevent_deletion_if_contains_resources = false
@@ -28,6 +29,7 @@ module "aks" {
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   dns_prefix          = "${var.environment}-aks"
+  subscription_id     = var.subscription_id
 }
 
 module "networking" {
@@ -37,6 +39,7 @@ module "networking" {
   resource_group_name = azurerm_resource_group.rg.name
   environment         = var.environment
   location            = azurerm_resource_group.rg.location
+  subscription_id     = var.subscription_id
 }
 
 module "storage" {
@@ -45,4 +48,5 @@ module "storage" {
   resource_group_name  = azurerm_resource_group.rg.name
   environment          = var.environment
   location             = azurerm_resource_group.rg.location
+  subscription_id      = var.subscription_id
 }
