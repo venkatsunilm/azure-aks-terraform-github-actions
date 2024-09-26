@@ -94,4 +94,11 @@ venv/
 
 # Ignore Kubectl file
 kubectl
+<<<<<<< HEAD
 >>>>>>> a7c8b25 (Refactor and streamline GitHub Actions and Terraform setup (#13))
+=======
+*.terraform.tfstate.lock.info
+my.secrets
+my.variables
+.env
+>>>>>>> 895554b (Upgrade: Update terraform core and azurerm (#17))

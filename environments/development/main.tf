@@ -2,13 +2,17 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 4.0"
+      version = "=4.3.0" # install the latest terraform core if we use version > 4.0
     }
   }
 }
 
 provider "azurerm" {
-  features {}
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -24,6 +28,7 @@ module "aks" {
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   dns_prefix          = "${var.environment}-aks"
+  # depends_on          = [azurerm_resource_group.rg]
   # dns_prefix_private_cluster
 }
 
@@ -34,6 +39,7 @@ module "networking" {
   resource_group_name = azurerm_resource_group.rg.name
   environment         = var.environment
   location            = azurerm_resource_group.rg.location
+  # depends_on          = [azurerm_resource_group.rg]
 }
 
 # Generate a random suffix for the storage account name
@@ -49,4 +55,5 @@ module "storage" {
   resource_group_name  = azurerm_resource_group.rg.name
   environment          = var.environment
   location             = azurerm_resource_group.rg.location
+  # depends_on           = [azurerm_resource_group.rg]
 }
