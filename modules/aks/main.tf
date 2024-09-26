@@ -2,12 +2,13 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "=4.3.0"
+      version = "=4.0.1"
     }
   }
 }
 
 provider "azurerm" {
+  subscription_id = var.subscription_id
   features {}
 }
 
@@ -28,13 +29,6 @@ resource "azurerm_kubernetes_cluster" "aks" {
   identity {
     type = "SystemAssigned"
   }
-
-  #   service_principal {
-  #     client_id     = var.appId
-  #     client_secret = var.password
-  #   }
-
-  #   role_based_access_control_enabled = true
 
   tags = {
     environment = var.environment
