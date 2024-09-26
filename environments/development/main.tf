@@ -2,7 +2,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "=4.3.0" # install the latest terraform core if we use version > 4.0
+      version = "=4.0.1" # install the latest terraform core if we use version > 4.0
     }
   }
 }

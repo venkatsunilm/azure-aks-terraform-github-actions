@@ -9,6 +9,7 @@ on:
     branches:
       - develop
       - main
+      - actions_*
 
 jobs:
   terraform:
@@ -32,6 +33,23 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      # Print environment variables (Non-sensitive values)
+      - name: Print environment variables
+        run: |
+          echo "NODE_COUNT: $TF_VAR_NODE_COUNT"
+          echo "LOCATION: $TF_VAR_LOCATION"
+          echo "ENVIRONMENT: $TF_VAR_ENVIRONMENT"
+
+      # Mask sensitive secrets while printing
+      - name: Print sensitive values (masked)
+        run: |
+          echo "CLIENT_ID: $ARM_CLIENT_ID"
+          echo "CLIENT_SECRET: [MASKED]"
+          echo "TENANT_ID: $ARM_TENANT_ID"
+          echo "SUBSCRIPTION_ID: $ARM_SUBSCRIPTION_ID"
+        env:
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
