@@ -43,3 +43,7 @@ venv/
 
 # Ignore Kubectl file
 kubectl
+*.terraform.tfstate.lock.info
+my.secrets
+my.variables
+.env
