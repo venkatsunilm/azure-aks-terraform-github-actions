@@ -9,7 +9,7 @@ on:
     branches:
       - develop
       - main
-      - actions_*
+      - refactor*
 
 jobs:
   terraform:
@@ -17,7 +17,7 @@ jobs:
 
     # Automatically choose the environment: default is "development", use "production" for the "main" branch
     environment:
-      name: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+      name: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
 
     env:
       # Terraform variables are pulled from GitHub Environment Variables
@@ -26,30 +26,20 @@ jobs:
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
-      TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-      TF_VAR_location: ${{ vars.TF_VAR_LOCATION }}
-      TF_VAR_node_count: ${{ vars.TF_VAR_NODE_COUNT }}
       TF_VAR_environment: ${{ vars.TF_VAR_ENVIRONMENT }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Print environment variables (Non-sensitive values)
-      - name: Print environment variables
-        run: |
-          echo "NODE_COUNT: $TF_VAR_node_count"
-          echo "LOCATION: $TF_VAR_location"
-          echo "ENVIRONMENT: $TF_VAR_environment"
-          echo "SUBSCRIPTION_ID: $TF_VAR_subscription_id"
+      - name: Create tfvars file from secrets
+        run: echo "${{ secrets.TFVARS }}" > environments/$TF_VAR_environment.tfvars
 
-      # Mask sensitive secrets while printing
-      - name: Print sensitive values (masked)
+      # Debug step: Print the contents of the tfvars file (optional)
+      - name: Print tfvars contents (optional)
         run: |
-          echo "CLIENT_ID: $ARM_CLIENT_ID"
-          echo "CLIENT_SECRET: [MASKED]"
-          echo "TENANT_ID: $ARM_TENANT_ID"
-          echo "SUBSCRIPTION_ID: $ARM_SUBSCRIPTION_ID"
+          echo "Contents of $TF_VAR_environment.tfvars file:"
+          cat environments/$TF_VAR_environment.tfvars
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
@@ -57,19 +47,19 @@ jobs:
       # Terraform Init
       - name: Terraform Init
         run: terraform init
-        working-directory: environments/${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+        working-directory: environments/shared
 
       # Terraform Plan
       - name: Terraform Plan
-        run: terraform plan
-        working-directory: environments/${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+        run: terraform plan -var-file="../$TF_VAR_environment.tfvars"
+        working-directory: environments/shared
 
-      # Terraform Apply
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
-        working-directory: environments/${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+      # # Terraform Apply
+      # - name: Terraform Apply
+      #   run: terraform apply -auto-approve
+      #   working-directory: environments/${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
 
-      # Terraform Apply
-      - name: Terraform Destroy
-        run: terraform destroy -auto-approve
-        working-directory: environments/${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+      # # Terraform Apply
+      # - name: Terraform Destroy
+      #   run: terraform destroy -auto-approve
+      #   working-directory: environments/${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
