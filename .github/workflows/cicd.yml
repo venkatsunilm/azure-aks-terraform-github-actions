@@ -31,11 +31,6 @@ jobs:
       TF_VAR_node_count: ${{ vars.TF_VAR_NODE_COUNT }}
       TF_VAR_environment: ${{ vars.TF_VAR_ENVIRONMENT }}
 
-      TF_VAR_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-      TF_VAR_LOCATION: ${{ vars.TF_VAR_LOCATION }}
-      TF_VAR_NODE_COUNT: ${{ vars.TF_VAR_NODE_COUNT }}
-      TF_VAR_ENVIRONMENT: ${{ vars.TF_VAR_ENVIRONMENT }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
