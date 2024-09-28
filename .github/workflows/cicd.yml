@@ -9,7 +9,7 @@ on:
     branches:
       - develop
       - main
-      - actions_*
+      - refactor*
 
 jobs:
   terraform:
@@ -17,7 +17,7 @@ jobs:
 
     # Automatically choose the environment: default is "development", use "production" for the "main" branch
     environment:
-      name: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+      name: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
 
     env:
       # Terraform variables are pulled from GitHub Environment Variables
@@ -26,50 +26,40 @@ jobs:
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
-      TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-      TF_VAR_location: ${{ vars.TF_VAR_LOCATION }}
-      TF_VAR_node_count: ${{ vars.TF_VAR_NODE_COUNT }}
       TF_VAR_environment: ${{ vars.TF_VAR_ENVIRONMENT }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      # Print environment variables (Non-sensitive values)
-      - name: Print environment variables
+      # Use here-doc usage to create the tfvars file with proper newlines
+      # Error: Missing newline after argument
+      - name: Create tfvars file from secrets & Print encrypted content
         run: |
-          echo "NODE_COUNT: $TF_VAR_node_count"
-          echo "LOCATION: $TF_VAR_location"
-          echo "ENVIRONMENT: $TF_VAR_environment"
-          echo "SUBSCRIPTION_ID: $TF_VAR_subscription_id"
-
-      # Mask sensitive secrets while printing
-      - name: Print sensitive values (masked)
-        run: |
-          echo "CLIENT_ID: $ARM_CLIENT_ID"
-          echo "CLIENT_SECRET: [MASKED]"
-          echo "TENANT_ID: $ARM_TENANT_ID"
-          echo "SUBSCRIPTION_ID: $ARM_SUBSCRIPTION_ID"
+          cat <<EOF > environments/$TF_VAR_environment.tfvars
+          ${{ secrets.TFVARS }}
+          EOF
+          cat environments/$TF_VAR_environment.tfvars
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v3
 
       # Terraform Init
       - name: Terraform Init
         run: terraform init
-        working-directory: environments/${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+        working-directory: environments/shared
 
       # Terraform Plan
       - name: Terraform Plan
-        run: terraform plan
-        working-directory: environments/${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+        run: terraform plan -var-file="../$TF_VAR_environment.tfvars"
+        working-directory: environments/shared
 
       # Terraform Apply
       - name: Terraform Apply
-        run: terraform apply -auto-approve
-        working-directory: environments/${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+        run: terraform apply -var-file="../$TF_VAR_environment.tfvars" -auto-approve
+        working-directory: environments/shared
 
       # Terraform Apply
       - name: Terraform Destroy
-        run: terraform destroy -auto-approve
-        working-directory: environments/${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+        run: terraform destroy -var-file="../$TF_VAR_environment.tfvars" -auto-approve
+        working-directory: environments/shared
