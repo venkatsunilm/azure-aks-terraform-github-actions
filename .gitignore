@@ -101,4 +101,8 @@ kubectl
 my.secrets
 my.variables
 .env
+<<<<<<< HEAD
 >>>>>>> 895554b (Upgrade: Update terraform core and azurerm (#17))
+=======
+environments/shared/local_env_setup.sh
+>>>>>>> b3e9a11 (Refactor: Improve maintainability using locals (#22))
