@@ -47,3 +47,4 @@ kubectl
 my.secrets
 my.variables
 .env
+environments/shared/local_env_setup.sh

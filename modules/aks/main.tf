@@ -6,14 +6,14 @@ resource "azurerm_kubernetes_cluster" "aks" {
   #   kubernetes_version  = "1.26.3"
 
   default_node_pool {
-    name       = "default"
+    name       = local.node_pool_name
     node_count = var.node_count
-    vm_size    = "Standard_D2_v2"
+    vm_size    = local.vm_size
     # os_disk_size_gb = 30
   }
 
   identity {
-    type = "SystemAssigned"
+    type = local.type
   }
 
   tags = {
