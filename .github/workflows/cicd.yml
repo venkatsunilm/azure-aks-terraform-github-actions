@@ -30,7 +30,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Create tfvars file from secrets
         run: echo "${{ secrets.TFVARS }}" > environments/$TF_VAR_environment.tfvars
@@ -42,7 +42,7 @@ jobs:
           cat environments/$TF_VAR_environment.tfvars
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v3
 
       # Terraform Init
       - name: Terraform Init
