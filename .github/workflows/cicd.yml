@@ -32,13 +32,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Create tfvars file from secrets
-        run: echo "${{ secrets.TFVARS }}" > environments/$TF_VAR_environment.tfvars
-
-      # Debug step: Print the contents of the tfvars file (optional)
-      - name: Print tfvars contents (optional)
+      # Use here-doc usage to create the tfvars file with proper newlines
+      # Error: Missing newline after argument
+      - name: Create tfvars file from secrets & Print encrypted content
         run: |
-          echo "Contents of $TF_VAR_environment.tfvars file:"
+          cat <<EOF > environments/$TF_VAR_environment.tfvars
+          ${{ secrets.TFVARS }}
+          EOF
           cat environments/$TF_VAR_environment.tfvars
 
       - name: Setup Terraform
@@ -54,12 +54,12 @@ jobs:
         run: terraform plan -var-file="../$TF_VAR_environment.tfvars"
         working-directory: environments/shared
 
-      # # Terraform Apply
-      # - name: Terraform Apply
-      #   run: terraform apply -auto-approve
-      #   working-directory: environments/${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+      # Terraform Apply
+      - name: Terraform Apply
+        run: terraform apply -var-file="../$TF_VAR_environment.tfvars" -auto-approve
+        working-directory: environments/shared
 
-      # # Terraform Apply
-      # - name: Terraform Destroy
-      #   run: terraform destroy -auto-approve
-      #   working-directory: environments/${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+      # Terraform Apply
+      - name: Terraform Destroy
+        run: terraform destroy -var-file="../$TF_VAR_environment.tfvars" -auto-approve
+        working-directory: environments/shared
