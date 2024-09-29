@@ -98,11 +98,14 @@ kubectl
 >>>>>>> a7c8b25 (Refactor and streamline GitHub Actions and Terraform setup (#13))
 =======
 *.terraform.tfstate.lock.info
-my.secrets
-my.variables
 .env
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> 895554b (Upgrade: Update terraform core and azurerm (#17))
 =======
 environments/shared/local_env_setup.sh
 >>>>>>> b3e9a11 (Refactor: Improve maintainability using locals (#22))
+=======
+helper/local_env_setup.sh
+helper/tf_backend_storage.sh
+>>>>>>> 965da9e (Add tf state backend and remove local state (#23))

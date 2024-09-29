@@ -9,7 +9,7 @@ on:
     branches:
       - develop
       - main
-      - refactor*
+      - feat_*
 
 jobs:
   terraform:

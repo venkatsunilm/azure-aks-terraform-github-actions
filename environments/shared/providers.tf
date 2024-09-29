@@ -15,12 +15,13 @@ terraform {
     }
   }
 
-  #   backend "azurerm" {
-  #     storage_account_name = "terraform-backend"
-  #     container_name       = "state"
-  #     key                  = "${var.environment}.tfstate"
-  #   }
-
+  backend "azurerm" {
+    resource_group_name  = "rg-terraform-backend"
+    storage_account_name = "tfstate1727591364"
+    container_name       = "tfstate"
+    key                  = "terraform.tfstate" # State file name
+  }
 }
+
 
 
