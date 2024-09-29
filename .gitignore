@@ -44,7 +44,6 @@ venv/
 # Ignore Kubectl file
 kubectl
 *.terraform.tfstate.lock.info
-my.secrets
-my.variables
 .env
-environments/shared/local_env_setup.sh
+helper/local_env_setup.sh
+helper/tf_backend_storage.sh
