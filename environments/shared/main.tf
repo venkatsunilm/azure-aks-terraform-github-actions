@@ -3,6 +3,17 @@ resource "azurerm_resource_group" "rg" {
   location = local.location
 }
 
+# Create Resource Group for ACR
+resource "azurerm_resource_group" "acr_rg" {
+  name     = local.acr_resource_group_name
+  location = local.location
+}
+
+module "acr" {
+  source        = "../modules/acr"
+  registry_name = local.registry_name
+}
+
 module "aks" {
   source              = "../../modules/aks"
   cluster_name        = local.cluster_name

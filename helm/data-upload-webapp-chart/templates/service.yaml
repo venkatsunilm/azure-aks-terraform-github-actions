@@ -1,15 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "data-upload-webapp-chart.fullname" . }}
-  labels:
-    {{- include "data-upload-webapp-chart.labels" . | nindent 4 }}
+  name: { { include "data-upload-webapp-chart.fullname" . } }
 spec:
-  type: {{ .Values.service.type }}
+  type: ClusterIP # You can change this to LoadBalancer if you want external access directly
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
+    - port: 80
+      targetPort: 8000 # The port your app listens on inside the container
   selector:
-    {{- include "data-upload-webapp-chart.selectorLabels" . | nindent 4 }}
+    app: { { include "data-upload-webapp-chart.name" . } }

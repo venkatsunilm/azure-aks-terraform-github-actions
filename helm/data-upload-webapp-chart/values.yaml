@@ -1,4 +1,21 @@
-replicacount: 1
+replicaCount: 1
 
 image:
-  re
+  repository: venkatsunilm.azurecr.io/data-upload-webapp
+  tag: "latest"  # You can replace this with the actual tag if needed
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8000
+
+ingress:
+  enabled: true
+  annotations: {}
+  hosts:
+    - host: datauploadwebapp.com # Replace with your domain
+      paths:
+        - /
+  tls: []
+
+resources: {}

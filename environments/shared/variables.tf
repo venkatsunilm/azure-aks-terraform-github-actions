@@ -18,3 +18,7 @@ variable "subscription_id" {
   type        = string
 }
 
+variable "registry_name" {
+  description = "Name of the Azure Container Registry"
+  type        = string
+}

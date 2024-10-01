@@ -14,4 +14,8 @@ locals {
   # storage
   storage_account_name = "sa${var.environment}${random_string.storage_suffix.result}"
 
+  # ACR
+  registry_name           = "acr-gatfaks-${var.environment}"
+  acr_resource_group_name = "rg-acr-${var.environment}"
+
 }
