@@ -10,8 +10,11 @@ resource "azurerm_resource_group" "acr_rg" {
 }
 
 module "acr" {
-  source        = "../modules/acr"
-  registry_name = local.registry_name
+  source              = "../../modules/acr"
+  registry_name       = local.registry_name
+  resource_group_name = azurerm_resource_group.acr_rg.name
+  location            = azurerm_resource_group.acr_rg.location
+  subscription_id     = var.subscription_id
 }
 
 module "aks" {

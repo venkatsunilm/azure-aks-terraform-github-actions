@@ -46,23 +46,54 @@ jobs:
 
       # Terraform Init
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -backend=true
         working-directory: environments/shared
+
+      # - name: Terraform Init
+      #   run:
+      #     terraform init -backend-config="resource_group_name=rg-terraform-backend" \
+      #     -backend-config="storage_account_name=tfstate1727630878" \
+      #     -backend-config="container_name=tfstate" \
+      #     -backend-config="key=dev.terraform.tfstate"
+      #   working-directory: environments/shared
 
       # Terraform Plan
       - name: Terraform Plan
-        run: terraform plan -var-file="../$TF_VAR_environment.tfvars"
+        run: terraform plan -var-file="../$TF_VAR_environment.tfvars" -out=tfplan
         working-directory: environments/shared
 
       # Terraform Apply
       - name: Terraform Apply
-        run: terraform apply -var-file="../$TF_VAR_environment.tfvars" -auto-approve
+        run: terraform apply -auto-approve tfplan
         working-directory: environments/shared
 
-      # Terraform Destroy
-      - name: Terraform Destroy
-        run: terraform destroy -var-file="../$TF_VAR_environment.tfvars" -auto-approve
-        working-directory: environments/shared
+      - name: Debug State and Outputs
+        run: |
+          echo "Show Terraform State:"
+          terraform show
+          echo "Show Terraform Outputs in JSON:"
+          terraform output -json
+
+        # Capture Terraform Output
+      - name: Get Terraform Outputs
+        run: |
+          AKS_CLUSTER_NAME=$(terraform output -raw aks_cluster_name)
+          AKS_RESOURCE_GROUP=$(terraform output -raw aks_rg_name)
+          ACR_REGISTRY_NAME=$(terraform output -raw acr_registry_name)
+          echo "AKS_CLUSTER_NAME=$AKS_CLUSTER_NAME" >> $GITHUB_ENV
+          echo "AKS_RESOURCE_GROUP=$AKS_RESOURCE_GROUP" >> $GITHUB_ENV
+          echo "ACR_REGISTRY_NAME=$ACR_REGISTRY_NAME" >> $GITHUB_ENV
+
+      - name: Print Outputs
+        run: |
+          echo "Using AKS Cluster: $AKS_CLUSTER_NAME"
+          echo "Using Resource Group: $AKS_RESOURCE_GROUP"
+          echo "Using Registry : $ACR_REGISTRY_NAME"
+
+      # # Terraform Destroy
+      # - name: Terraform Destroy
+      #   run: terraform destroy -var-file="../$TF_VAR_environment.tfvars" -auto-approve
+      #   working-directory: environments/shared
 
   # Web App deployment job
   deploy-webapp:
@@ -76,10 +107,7 @@ jobs:
     env:
       # Terraform variables are pulled from GitHub Environment Variables
       REGISTRY_NAME: ${{ secrets.REGISTRY_NAME }}
-      AKS_RESOURCE_GROUP: ${{ secrets.AKS_RESOURCE_GROUP }}
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-      AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}
-
       GITHUB_SHA: ${{ github.sha }}
 
     steps:
@@ -90,6 +118,13 @@ jobs:
         uses: azure/login@v2
         with:
           creds: $AZURE_CREDENTIALS
+
+      # Use the Terraform Output in Subsequent Steps
+      - name: Print Outputs
+        run: |
+          echo "Using AKS Cluster: $AKS_CLUSTER_NAME"
+          echo "Using Resource Group: $AKS_RESOURCE_GROUP"
+          echo "Using Registry : $ACR_REGISTRY_NAME"
 
       # Build Docker image
       - name: Build Docker image
