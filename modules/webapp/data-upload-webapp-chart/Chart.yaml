@@ -1,0 +1,7 @@
+apiVersion: v2
+name: data-upload-webapp
+description: A Helm chart for Kubernetes
+version: 0.1.0
+maintainers:
+  - email: venkatsunilm@gmail.com
+    name: Venkat Minchala

@@ -36,10 +36,10 @@ jobs:
       # Error: Missing newline after argument
       - name: Create tfvars file from secrets & Print encrypted content
         run: |
-          cat <<EOF > environments/$TF_VAR_environment.tfvars
+          cat <<EOF > deployment/$TF_VAR_environment.tfvars
           ${{ secrets.TFVARS }}
           EOF
-          cat environments/$TF_VAR_environment.tfvars
+          cat deployment/$TF_VAR_environment.tfvars
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -47,7 +47,7 @@ jobs:
       # Terraform Init
       - name: Terraform Init
         run: terraform init -backend=true
-        working-directory: environments/shared
+        working-directory: deployment/shared
 
       # - name: Terraform Init
       #   run:
@@ -55,17 +55,17 @@ jobs:
       #     -backend-config="storage_account_name=tfstate1727630878" \
       #     -backend-config="container_name=tfstate" \
       #     -backend-config="key=dev.terraform.tfstate"
-      #   working-directory: environments/shared
+      #   working-directory: deployment/shared
 
       # Terraform Plan
       - name: Terraform Plan
         run: terraform plan -var-file="../$TF_VAR_environment.tfvars" -out=tfplan
-        working-directory: environments/shared
+        working-directory: deployment/shared
 
       # Terraform Apply
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
-        working-directory: environments/shared
+        working-directory: deployment/shared
 
       - name: Debug State and Outputs
         run: |
@@ -73,8 +73,9 @@ jobs:
           terraform show
           echo "Show Terraform Outputs in JSON:"
           terraform output -json
+        working-directory: deployment/shared
 
-        # Capture Terraform Output
+      # Capture Terraform Output
       - name: Get Terraform Outputs
         run: |
           AKS_CLUSTER_NAME=$(terraform output -raw aks_cluster_name)
@@ -83,6 +84,7 @@ jobs:
           echo "AKS_CLUSTER_NAME=$AKS_CLUSTER_NAME" >> $GITHUB_ENV
           echo "AKS_RESOURCE_GROUP=$AKS_RESOURCE_GROUP" >> $GITHUB_ENV
           echo "ACR_REGISTRY_NAME=$ACR_REGISTRY_NAME" >> $GITHUB_ENV
+        working-directory: deployment/shared
 
       - name: Print Outputs
         run: |
@@ -93,7 +95,7 @@ jobs:
       # # Terraform Destroy
       # - name: Terraform Destroy
       #   run: terraform destroy -var-file="../$TF_VAR_environment.tfvars" -auto-approve
-      #   working-directory: environments/shared
+      #   working-directory: deployment/shared
 
   # Web App deployment job
   deploy-webapp:
@@ -108,7 +110,9 @@ jobs:
       # Terraform variables are pulled from GitHub Environment Variables
       REGISTRY_NAME: ${{ secrets.REGISTRY_NAME }}
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-      GITHUB_SHA: ${{ github.sha }}
+      IMAGE_VERSION_WEBAPP: latest
+      # # IMAGE_VERSION_WEBAPP: ${{ github.sha }}
+      DOCKER_IMAGE_NAME_WEBAPP: ${{ secrets.DOCKER_IMAGE_NAME_WEBAPP }}
 
     steps:
       - name: Checkout code
@@ -129,7 +133,7 @@ jobs:
       # Build Docker image
       - name: Build Docker image
         run: |
-          docker build -t $REGISTRY_NAME.azurecr.io/webapp:$GITHUB_SHA ./src/webapp
+          docker build -t $REGISTRY_NAME.azurecr.io/webapp:$IMAGE_VERSION_WEBAPP ./src/webapp
 
       # Login to Azure Container Registry (ACR)
       - name: ACR Login
@@ -138,10 +142,10 @@ jobs:
 
       # Push Docker image to Azure Container Registry
       - name: Push Docker image
-        run: docker push $REGISTRY_NAME.azurecr.io/webapp:$GITHUB_SHA
+        run: docker push $REGISTRY_NAME.azurecr.io/webapp:$IMAGE_VERSION_WEBAPP
 
       # Deploy to AKS
       - name: Deploy to AKS
         run: |
           az aks get-credentials --resource-group $AKS_RESOURCE_GROUP --name $AKS_CLUSTER_NAME
-          kubectl set image deployment/webapp webapp=$REGISTRY_NAME.azurecr.io/webapp:$GITHUB_SHA
+          kubectl set image deployment/webapp webapp=$REGISTRY_NAME.azurecr.io/webapp:$IMAGE_VERSION_WEBAPP
