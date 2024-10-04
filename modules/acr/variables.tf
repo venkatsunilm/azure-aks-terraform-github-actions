@@ -1,20 +1,10 @@
-variable "vnet_name" {
-  description = "The name of the virtual network"
-  type        = string
-}
-
-variable "subnet_name" {
-  description = "The name of the subnet"
+variable "registry_name" {
+  description = "Name of the Azure Container Registry"
   type        = string
 }
 
 variable "resource_group_name" {
   description = "The name of the resource group"
-  type        = string
-}
-
-variable "environment" {
-  description = "The environment (e.g., dev, staging, prod)"
   type        = string
 }
 
@@ -27,3 +17,6 @@ variable "subscription_id" {
   description = "The Azure subscription ID"
   type        = string
 }
+
+
+
