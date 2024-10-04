@@ -1,28 +1,11 @@
-name: data-upload-webapp
+name: webapp
 
 environment: prod
 
-replicas: 3
+replicas: 2
 
 image:
-  repository: venkatsunilm
+  repository: venkatsunilm.azurecr.io
   name: data-upload-webapp
   tag: "latest"
   pullPolicy: IfNotPresent
-
-# flask_env: development
-
-# service:
-#   type: ClusterIP
-#   port: 8000
-
-# ingress:
-#   enabled: true
-#   annotations: {}
-#   hosts:
-#     - host: datauploadwebapp.com # Replace with your domain
-#       paths:
-#         - /
-#   tls: []
-
-# resources: {}

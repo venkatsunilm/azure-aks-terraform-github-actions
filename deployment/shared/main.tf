@@ -26,6 +26,7 @@ module "aks" {
   location            = azurerm_resource_group.rg.location
   dns_prefix          = local.dns_prefix
   subscription_id     = var.subscription_id
+  acr_registry_id     = module.acr.acr_registry_id
   # dns_prefix_private_cluster
 }
 
