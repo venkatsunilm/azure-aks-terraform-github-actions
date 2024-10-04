@@ -1,4 +1,4 @@
-name: data-upload-webapp
+name: webapp
 
 environment: dev
 
@@ -9,20 +9,3 @@ image:
   name: data-upload-webapp
   tag: "latest"
   pullPolicy: IfNotPresent
-
-# flask_env: development
-
-# service:
-#   type: ClusterIP
-#   port: 8000
-
-# ingress:
-#   enabled: true
-#   annotations: {}
-#   hosts:
-#     - host: datauploadwebapp.com # Replace with your domain
-#       paths:
-#         - /
-#   tls: []
-
-# resources: {}

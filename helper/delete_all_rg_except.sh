@@ -1,4 +1,4 @@
-# #!/bin/bash
+#!/bin/bash
 
 az aks delete --name myakscluster --resource-group rg-dev-cluster --yes
 az network watcher configure --locations eastus --enabled false
@@ -19,6 +19,7 @@ for rg in $ALL_RGS; do
   if [[ ! " ${KEEP_RGS[@]} " =~ " ${rg} " ]]; then
     echo "Deleting resource group: $rg"
     az group delete --name "$rg" --yes
+    echo "Deleted resource group: $rg"
   else
     echo "Skipping resource group: $rg"
   fi

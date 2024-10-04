@@ -1,28 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: { { .Values.name } }
+  name: {{ .Values.name }}
   labels:
-    app: { { .Values.name } }
+    app: {{ .Values.name }}
 spec:
-  replicas: { { .Values.replicas } }
+  replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: { { .Values.name } }
-  # strategy:
-  #   type: RollingUpdate
-  #   rollingUpdate:
-  #     maxSurge: 1
-  #     maxUnavailable: 0
+      app: {{ .Values.name }}
   template:
     metadata:
       labels:
-        app: { { .Values.name } }
+        app: {{ .Values.name }}
     spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
       containers:
-        -name: { { .Values.name } }
-        image: "{{ .Values.image.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
-        imagePullPolicy: Always
-
-        # ports:
-        #   - containerPort: 8000
+        - name: {{ .Values.name }}
+          image: "{{ .Values.image.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+              name: {{ .Values.name }}
+          requests:
+            cpu: 1m
+            memory: 200Mi
+          limits:
+            cpu: 1000m
+            memory: 512Mi

@@ -1,5 +1,6 @@
 # https://registry.terraform.io/providers/hashicorp/helm/latest/docs
 
+# TODO: Remove azurerm provider as the root is already setting the provider. 
 provider "azurerm" {
   subscription_id = var.subscription_id
   features {}
@@ -7,7 +8,8 @@ provider "azurerm" {
 
 provider "helm" {
   kubernetes {
-    config_path = "~/.kube/config"
+    # config_path = "~/.kube/config"
+    config_path = "/mnt/c/Users/harit/.kube/config"
   }
 
   alias = "aks"
@@ -22,7 +24,7 @@ terraform {
 
     helm = {
       source  = "hashicorp/helm"
-      version = "~> 2.3.0"
+      version = "~> 2.15.0"
     }
   }
 }

@@ -55,8 +55,8 @@ module "storage" {
   subscription_id      = var.subscription_id
 }
 
-# module "webapp" {
-#   source          = "../../modules/webapp"
-#   environment     = local.environment
-#   subscription_id = var.subscription_id
-# }
+module "webapp" {
+  source          = "../../modules/webapp"
+  environment     = local.environment
+  subscription_id = var.subscription_id
+}
