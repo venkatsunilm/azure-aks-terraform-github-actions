@@ -1,0 +1,11 @@
+name: webapp
+
+environment: prod
+
+replicas: 2
+
+image:
+  repository: venkatsunilm.azurecr.io
+  name: data-upload-webapp
+  tag: "latest"
+  pullPolicy: IfNotPresent
