@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Variables
 export AKS_RESOURCE_GROUP="rg-development"
 export AKS_CLUSTER_NAME="aks-development"
