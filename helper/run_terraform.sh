@@ -5,7 +5,7 @@ set -e
 TF_DIR="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/deployment/shared"
 
 # Set the environment variable to development
-TF_VAR_environment="development"
+export TF_VAR_environment="development"
 
 # Log file to capture the output
 LOG_FILE="terraform_apply_output.log"
@@ -27,4 +27,4 @@ terraform apply -var-file="../$TF_VAR_environment.tfvars" -auto-approve | tee "$
 
 # Optional: Destroy with the specified environment variable and auto-approve
 # echo "Destroying Terraform resources for environment: $TF_VAR_environment..."
-# terraform destroy -var-file="../$TF_VAR_environment.tfvars" -auto-approve | tee -a "$LOG_FILE"  # Append destroy output to the same log file
+# terraform destroy -var-file="../$TF_VAR_environment.tfvars" -auto-approve | tee -a "$LOG_FILE"
