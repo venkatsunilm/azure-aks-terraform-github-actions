@@ -8,8 +8,8 @@ provider "azurerm" {
 
 provider "helm" {
   kubernetes {
-    # config_path = "~/.kube/config"
-    config_path = "/mnt/c/Users/harit/.kube/config"
+    config_path = "~/.kube/config"
+    # config_path = "/mnt/c/Users/harit/.kube/config"
   }
 
   alias = "aks"

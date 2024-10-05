@@ -27,4 +27,4 @@ terraform apply -var-file="../$TF_VAR_environment.tfvars" -auto-approve | tee "$
 
 # Optional: Destroy with the specified environment variable and auto-approve
 # echo "Destroying Terraform resources for environment: $TF_VAR_environment..."
-# terraform destroy -var-file="../$TF_VAR_environment.tfvars" -auto-approve | tee -a "$LOG_FILE"  # Append destroy output to the same log file
+# terraform destroy -var-file="../$TF_VAR_environment.tfvars" -auto-approve | tee -a "$LOG_FILE"

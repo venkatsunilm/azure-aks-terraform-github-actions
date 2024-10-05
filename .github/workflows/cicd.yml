@@ -15,12 +15,10 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
 
-    # Automatically choose the environment: default is "development", use "production" for the "main" branch
     environment:
       name: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
 
     env:
-      # Terraform variables are pulled from GitHub Environment Variables
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
@@ -48,14 +46,6 @@ jobs:
       - name: Terraform Init
         run: terraform init -backend=true
         working-directory: deployment/shared
-
-      # - name: Terraform Init
-      #   run:
-      #     terraform init -backend-config="resource_group_name=rg-terraform-backend" \
-      #     -backend-config="storage_account_name=tfstate1727630878" \
-      #     -backend-config="container_name=tfstate" \
-      #     -backend-config="key=dev.terraform.tfstate"
-      #   working-directory: deployment/shared
 
       # Terraform Plan
       - name: Terraform Plan
@@ -102,17 +92,17 @@ jobs:
     needs: terraform
     runs-on: ubuntu-latest
 
-    # Automatically choose the environment: default is "development", use "production" for the "main" branch
     environment:
       name: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
 
     env:
-      # Terraform variables are pulled from GitHub Environment Variables
-      REGISTRY_NAME: ${{ secrets.REGISTRY_NAME }}
+      ACR_REGISTRY_NAME: ${{ secrets.ACR_REGISTRY_NAME }} 
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-      IMAGE_VERSION_WEBAPP: latest
-      # # IMAGE_VERSION_WEBAPP: ${{ github.sha }}
       DOCKER_IMAGE_NAME_WEBAPP: ${{ secrets.DOCKER_IMAGE_NAME_WEBAPP }}
+      ENVIRONMENT: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
+
+      IMAGE_VERSION_WEBAPP: latest
+      # IMAGE_VERSION_WEBAPP: ${{ github.sha }}
 
     steps:
       - name: Checkout code
@@ -126,26 +116,27 @@ jobs:
       # Use the Terraform Output in Subsequent Steps
       - name: Print Outputs
         run: |
-          echo "Using AKS Cluster: $AKS_CLUSTER_NAME"
-          echo "Using Resource Group: $AKS_RESOURCE_GROUP"
+          echo "ENVIRONMENT: $ENVIRONMENT"
           echo "Using Registry : $ACR_REGISTRY_NAME"
-
-      # Build Docker image
-      - name: Build Docker image
-        run: |
-          docker build -t $REGISTRY_NAME.azurecr.io/webapp:$IMAGE_VERSION_WEBAPP ./src/webapp
 
       # Login to Azure Container Registry (ACR)
       - name: ACR Login
         run: |
-          az acr login --name $REGISTRY_NAME
+          az acr login --name $ACR_REGISTRY_NAME
+        working-directory: src/webapp
 
-      # Push Docker image to Azure Container Registry
+      # Build & Push Docker image to Azure Container Registry
       - name: Push Docker image
-        run: docker push $REGISTRY_NAME.azurecr.io/webapp:$IMAGE_VERSION_WEBAPP
-
-      # Deploy to AKS
-      - name: Deploy to AKS
         run: |
-          az aks get-credentials --resource-group $AKS_RESOURCE_GROUP --name $AKS_CLUSTER_NAME
-          kubectl set image deployment/webapp webapp=$REGISTRY_NAME.azurecr.io/webapp:$IMAGE_VERSION_WEBAPP
+          docker build -t $ACR_REGISTRY_NAME.azurecr.io/webapp:$IMAGE_VERSION_WEBAPP
+          docker push $ACR_REGISTRY_NAME.azurecr.io/webapp:$IMAGE_VERSION_WEBAPP
+          echo "Verifying repository images in ACR..."
+          az acr repository list --name $ACR_NAME --output table
+        working-directory: src/webapp
+
+      # Deploy Helm Chart
+      - name: Deploy Helm Chart
+        run: |
+          helm upgrade --install data-upload-webapp ./data-upload-webapp-chart \
+          --values ./data-upload-webapp-chart/$ENVIRONMENT-values.yaml
+        working-directory: modules/webapp

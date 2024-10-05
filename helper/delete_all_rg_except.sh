@@ -1,4 +1,8 @@
-#!/bin/bash
+WEBAPP_PATH="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/helper"
+
+# 1. Navigate to the directory where the Dockerfile is located
+echo "Navigating to $WEBAPP_PATH..."
+cd "$WEBAPP_PATH" || { echo "Directory $WEBAPP_PATH not found. Exiting."; exit 1; }
 
 az aks delete --name myakscluster --resource-group rg-dev-cluster --yes
 az network watcher configure --locations eastus --enabled false
