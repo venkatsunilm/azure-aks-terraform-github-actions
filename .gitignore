@@ -10,7 +10,6 @@
 crash.log
 
 # Sensitive variable files
-*.tfvars
 *.tfvars.json
 
 # Ignore override files as they are usually not checked in
@@ -45,5 +44,6 @@ venv/
 kubectl
 *.terraform.tfstate.lock.info
 .env
-helper/local_env_setup.sh
+helper/0_local_env_setup.sh
 helper/tf_backend_storage.sh
+terraform_apply_output

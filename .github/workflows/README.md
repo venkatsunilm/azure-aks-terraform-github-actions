@@ -1,4 +1,4 @@
-# Copy development.tfvars values as it is under secrets in GitHub secrets as 'TFVARS' under development environment and also the same for production environment
+# Copy dev.tfvars values as it is under secrets in GitHub secrets as 'TFVARS' under dev environment and also the same for prod environment
 
 'TFVARS'="\***_"
 "_**"
