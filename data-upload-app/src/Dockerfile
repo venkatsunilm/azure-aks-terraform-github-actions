@@ -1,9 +1,15 @@
+<<<<<<< HEAD
 # Stage 1: Base image for installing dependencies
 FROM python:3.13-alpine AS builder
+=======
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim
+>>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
 
 # Set the working directory
 WORKDIR /app
 
+<<<<<<< HEAD
 # Install necessary build dependencies for Python packages
 RUN apk add --no-cache gcc musl-dev libffi-dev
 
@@ -32,6 +38,17 @@ COPY . .
 # Copy the installed dependencies from the builder stage to the final image
 COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
+=======
+# Copy the current directory contents into the container at /app
+COPY . /app
+
+# RUN apt-get update && upgrade
+# RUN python -m pip install --upgrade pip
+
+# Install the required dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+# RUN pip install --root-user-action=ignore -r requirements.txt"
+>>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
 
 # Expose port 8000 for the app to run on
 EXPOSE 8000

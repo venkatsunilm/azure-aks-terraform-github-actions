@@ -3,8 +3,13 @@
 # Go to working directory
 
 working-directory: environments/shared
+<<<<<<< HEAD
 export TF_VAR_environment="dev"
 NOTE: dev.tfvars and prod.tfvars are generated dynamically in the pipeline by fetching the values from the GihHub Secrets for now.
+=======
+export TF_VAR_environment="development"
+NOTE: development.tfvars and production.tfvars are generated dynamically in the pipeline by fetching the values from the GihHub Secrets for now.
+>>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
 
 # Terraform init
 

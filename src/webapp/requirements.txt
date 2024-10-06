@@ -1,4 +1,0 @@
-Flask==3.0.3
-azure-storage-blob==12.21.0
-gunicorn==22.0
-Werkzeug==3.0.3

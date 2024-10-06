@@ -11,15 +11,24 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
+<<<<<<< HEAD
       version = "=4.0.1"
+=======
+      version = "=4.0.1" # install the latest terraform core if we use version > 4.0
+>>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
     }
   }
 
   backend "azurerm" {
     resource_group_name  = "rg-terraform-backend"
     storage_account_name = "tfstate1727630878"
+<<<<<<< HEAD
     container_name       = "infrastructure-state"
     key                  = "dev.infrastructure.tfstate"
+=======
+    container_name       = "tfstate"
+    key                  = "terraform.tfstate" # State file name
+>>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
   }
 }
 

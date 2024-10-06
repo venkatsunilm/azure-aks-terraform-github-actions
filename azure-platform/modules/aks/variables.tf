@@ -15,7 +15,11 @@ variable "node_count" {
 }
 
 variable "environment" {
+<<<<<<< HEAD
   description = "The environment (e.g., dev, prod)"
+=======
+  description = "The environment (e.g., development, production)"
+>>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
   type        = string
 }
 

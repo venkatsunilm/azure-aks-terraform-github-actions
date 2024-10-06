@@ -18,10 +18,13 @@ variable "subscription_id" {
   type        = string
 }
 
+<<<<<<< HEAD
 variable "environment" {
   description = "The environment (e.g., dev, prod)"
   type        = string
 }
 
+=======
+>>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
 
 

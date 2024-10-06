@@ -7,7 +7,7 @@ LOCATION="eastus"
 IMAGE_NAME="data-upload-webapp"
 TAG="latest"
 PORT=8000
-WEBAPP_PATH="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/src/webapp"  # Relative path to your Dockerfile location
+WEBAPP_PATH="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/data-upload-app/src"
 
 # 1. Navigate to the directory where the Dockerfile is located
 echo "Navigating to $WEBAPP_PATH..."

@@ -3,6 +3,10 @@ resource "azurerm_resource_group" "rg" {
   location = local.location
 }
 
+<<<<<<< HEAD
+=======
+# Create Resource Group for ACR
+>>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
 resource "azurerm_resource_group" "acr_rg" {
   name     = local.acr_resource_group_name
   location = local.location
@@ -13,7 +17,10 @@ module "acr" {
   registry_name       = local.registry_name
   resource_group_name = azurerm_resource_group.acr_rg.name
   location            = azurerm_resource_group.acr_rg.location
+<<<<<<< HEAD
   environment         = local.environment
+=======
+>>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
   subscription_id     = var.subscription_id
 }
 
@@ -41,6 +48,7 @@ module "networking" {
 }
 
 # Generate a random suffix for the storage account name
+<<<<<<< HEAD
 # resource "random_string" "storage_suffix" {
 #   length  = 6
 #   special = false
@@ -55,3 +63,25 @@ module "networking" {
 #   location             = azurerm_resource_group.rg.location
 #   subscription_id      = var.subscription_id
 # }
+=======
+resource "random_string" "storage_suffix" {
+  length  = 6
+  special = false
+  upper   = false
+}
+
+module "storage" {
+  source               = "../modules/storage"
+  storage_account_name = local.storage_account_name
+  resource_group_name  = azurerm_resource_group.rg.name
+  environment          = local.environment
+  location             = azurerm_resource_group.rg.location
+  subscription_id      = var.subscription_id
+}
+
+module "webapp" {
+  source          = "../../data-upload-app/deployment"
+  environment     = local.environment
+  subscription_id = var.subscription_id
+}
+>>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
