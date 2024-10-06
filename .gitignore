@@ -61,7 +61,6 @@ helper/scripts/tf_backend_storage.sh
 crash.log
 
 # Sensitive variable files
-*.tfvars
 *.tfvars.json
 
 # Ignore override files as they are usually not checked in
@@ -101,6 +100,7 @@ kubectl
 .env
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 895554b (Upgrade: Update terraform core and azurerm (#17))
 =======
 environments/shared/local_env_setup.sh
@@ -109,3 +109,8 @@ environments/shared/local_env_setup.sh
 helper/local_env_setup.sh
 helper/tf_backend_storage.sh
 >>>>>>> 965da9e (Add tf state backend and remove local state (#23))
+=======
+helper/0_local_env_setup.sh
+helper/tf_backend_storage.sh
+terraform_apply_output
+>>>>>>> 00a6b5e (Doc: Update README file and add few project assets (#30))

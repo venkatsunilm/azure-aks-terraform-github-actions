@@ -1,6 +1,7 @@
 # Create docker image and container
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 docker build -t data-upload-app .
 docker run -d -p 8000:8000 data-upload-app
 
@@ -15,10 +16,19 @@ docker run -d -p 8000:8000 data-upload-webapp
 
 az group create --name rg-acr-development --location eastus
 >>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
+=======
+docker build -t data-upload-app .
+docker run -d -p 8000:8000 data-upload-app
+
+# Create RG
+
+az group create --name rg-acr-dev --location eastus
+>>>>>>> 00a6b5e (Doc: Update README file and add few project assets (#30))
 
 # Login and create ACR
 
 az acr login --name venkatsunilm
+<<<<<<< HEAD
 <<<<<<< HEAD
 az acr create --resource-group rg-acr-dev --name venkatsunilm --sku Basic
 
@@ -32,13 +42,21 @@ aks_cluster_name = "aks-dev"
 aks_rg_name = "rg-dev" -->
 =======
 az acr create --resource-group rg-acr-development --name venkatsunilm --sku Basic
+=======
+az acr create --resource-group rg-acr-dev --name venkatsunilm --sku Basic
+>>>>>>> 00a6b5e (Doc: Update README file and add few project assets (#30))
 
 # Push Docker Image to Container Registry:
 
-docker tag data-upload-webapp venkatsunilm.azurecr.io/data-upload-webapp:latest
-docker push venkatsunilm.azurecr.io/data-upload-webapp:latest
+docker tag data-upload-app venkatsunilm.azurecr.io/data-upload-app:latest
+docker push venkatsunilm.azurecr.io/data-upload-app:latest
 
 <!-- acr_registry_name = "venkatsunilm"
+<<<<<<< HEAD
 aks_cluster_name = "aks-development"
 aks_rg_name = "rg-development" -->
 >>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
+=======
+aks_cluster_name = "aks-dev"
+aks_rg_name = "rg-dev" -->
+>>>>>>> 00a6b5e (Doc: Update README file and add few project assets (#30))

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 # CI/CD Workflows for AKS and Application Deployment
 
@@ -106,6 +107,9 @@ The following secrets should be configured in the GitHub repository for the work
 For more details on how to modify and extend the pipelines, refer to the individual workflow files and actions within this repository.
 =======
 # Copy development.tfvars values as it is under secrets in GitHub secrets as 'TFVARS' under development environment and also the same for production environment
+=======
+# Copy dev.tfvars values as it is under secrets in GitHub secrets as 'TFVARS' under dev environment and also the same for prod environment
+>>>>>>> 00a6b5e (Doc: Update README file and add few project assets (#30))
 
 'TFVARS'="\***_"
 "_**"

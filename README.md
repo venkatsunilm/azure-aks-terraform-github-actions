@@ -203,7 +203,7 @@ DEVOPS-TERRAFORM-SAMPLE/ │ ├── .github/ # GitHub Actions workflows and c
 # azure-aks-terraform-github-actions-helm
 
 ## Overview
-This project involves infrastructure provisioning using **Terraform** and application deployment with **Helm** on **Azure Kubernetes Service (AKS)**. The project is structured to separate the management of infrastructure and application deployment, with clear environment-specific configurations for development and production environments.
+This project involves infrastructure provisioning using **Terraform** and application deployment with **Helm** on **Azure Kubernetes Service (AKS)**. The project is structured to separate the management of infrastructure and application deployment, with clear environment-specific configurations for dev and prod environments.
 
 ## Directory Structure
 
@@ -227,15 +227,15 @@ Contains the main Terraform configuration files that define and manage the infra
 - **main.tf**: The entry point for Terraform, which ties together the modules and manages resource dependencies.
 - **variables.tf**: Defines variables that are used across the Terraform configuration for flexibility and reusability.
 - **outputs.tf**: Specifies the output variables, such as the AKS cluster name or public IP, that are available after the infrastructure is provisioned.
-- **development.tfvars** and **production.tfvars**: Environment-specific variable files for development and production, ensuring that different configurations can be applied depending on the environment.
+- **dev.tfvars** and **prod.tfvars**: Environment-specific variable files for dev and prod, ensuring that different configurations can be applied depending on the environment.
 
 ### 4. Webapp Helm Chart
 This directory holds the Helm chart for deploying the web application to AKS.
 
-- **webapp-chart/**: Helm chart directory containing Kubernetes manifest templates for the web application deployment.
+- **app-chart/**: Helm chart directory containing Kubernetes manifest templates for the web application deployment.
 - **Chart.yaml**: The metadata file that defines the Helm chart's version, name, and dependencies.
-- **development-values.yaml**: Values file containing configurations specific to the development environment.
-- **production-values.yaml**: Values file containing configurations specific to the production environment.
+- **dev-values.yaml**: Values file containing configurations specific to the dev environment.
+- **prod-values.yaml**: Values file containing configurations specific to the prod environment.
 
 ### 5. Source Code (src)
 This directory contains the application's source code and associated resources.
@@ -261,21 +261,21 @@ This directory contains the application's source code and associated resources.
 3. Run Terraform commands:
    ```bash
    terraform init
-   terraform plan -var-file=development.tfvars
-   terraform apply -var-file=development.tfvars
+   terraform plan -var-file=dev.tfvars
+   terraform apply -var-file=dev.tfvars
    ```
 4. This will provision AKS, ACR, and other necessary infrastructure resources.
 
 #### 2. Application Deployment:
 1. After the infrastructure is set up, navigate to the `src` folder to build and push the Docker image:
    ```bash
-   docker build -t <acr_registry_name>.azurecr.io/data-upload-webapp:latest .
-   docker push <acr_registry_name>.azurecr.io/data-upload-webapp:latest
+   docker build -t <acr_registry_name>.azurecr.io/data-upload-app:latest .
+   docker push <acr_registry_name>.azurecr.io/data-upload-app:latest
    ```
-2. Navigate to the `webapp-chart` directory.
+2. Navigate to the `app-chart` directory.
 3. Use Helm to deploy the application:
    ```bash
-   helm upgrade --install data-upload-webapp ./webapp-chart --values ./webapp-chart/development-values.yaml
+   helm upgrade --install data-upload-app ./app-chart --values ./app-chart/dev-values.yaml
    ```
 
 ### CI/CD Pipeline
@@ -285,8 +285,8 @@ The project includes two CI/CD pipelines:
 2. **Application CI/CD (deploy-app-cicd.yml)**: This pipeline automates the build, push, and deployment of the web application using Docker and Helm.
 
 ### Environment-Specific Configurations
-- **Development**: Use `development.tfvars` and `development-values.yaml` for development environment deployment.
-- **Production**: Use `production.tfvars` and `production-values.yaml` for production environment deployment.
+- **Development**: Use `dev.tfvars` and `dev-values.yaml` for dev environment deployment.
+- **Production**: Use `prod.tfvars` and `prod-values.yaml` for prod environment deployment.
 
 ## License
 This project is licensed under the MIT License.
