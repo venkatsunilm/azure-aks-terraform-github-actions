@@ -15,7 +15,7 @@ variable "node_count" {
 }
 
 variable "environment" {
-  description = "The environment (e.g., development, production)"
+  description = "The environment (e.g., dev, prod)"
   type        = string
 }
 

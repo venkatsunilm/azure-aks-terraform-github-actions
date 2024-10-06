@@ -1,3 +1,3 @@
 locals {
-  app_name = "data-upload-webapp"
+  app_name = "data-upload-app"
 }
