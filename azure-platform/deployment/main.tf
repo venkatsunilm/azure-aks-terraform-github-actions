@@ -3,7 +3,6 @@ resource "azurerm_resource_group" "rg" {
   location = local.location
 }
 
-# Create Resource Group for ACR
 resource "azurerm_resource_group" "acr_rg" {
   name     = local.acr_resource_group_name
   location = local.location
@@ -14,6 +13,7 @@ module "acr" {
   registry_name       = local.registry_name
   resource_group_name = azurerm_resource_group.acr_rg.name
   location            = azurerm_resource_group.acr_rg.location
+  environment         = local.environment
   subscription_id     = var.subscription_id
 }
 
@@ -54,10 +54,4 @@ module "storage" {
   environment          = local.environment
   location             = azurerm_resource_group.rg.location
   subscription_id      = var.subscription_id
-}
-
-module "app" {
-  source          = "../../data-upload-app/deployment"
-  environment     = local.environment
-  subscription_id = var.subscription_id
 }

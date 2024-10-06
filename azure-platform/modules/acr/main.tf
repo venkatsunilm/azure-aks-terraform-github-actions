@@ -5,5 +5,10 @@ resource "azurerm_container_registry" "acr" {
   location            = var.location
   sku                 = local.sku
   # admin_enabled       = true # Optional: Enable admin access for pushing images
+
+  tags = {
+    environment = var.environment
+  }
+
 }
 

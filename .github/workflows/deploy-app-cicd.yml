@@ -1,94 +1,33 @@
-name: Terraform & Web App CI/CD Workflow
+name: Deploy Web App
 
 on:
-  pull_request:
-    branches:
-      - develop
-      - main
-  push:
-    branches:
-      - develop
-      - main
-      - feat_*
+  workflow_run:
+    workflows: ["Deploy Infrastructure"]
+    types:
+      - completed
 
 jobs:
-  terraform:
-    runs-on: ubuntu-latest
-
-    environment:
-      name: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
-
-    env:
-      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-
-      TF_VAR_environment: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Create tfvars file from secrets & Print encrypted content
-        run: |
-          cat <<EOF > deployment/$TF_VAR_environment.tfvars
-          ${{ secrets.TFVARS }}
-          EOF
-          cat deployment/$TF_VAR_environment.tfvars
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      # Terraform Init before First Plan
-      - name: Terraform Init (infrastructure)
-        run: terraform init
-        working-directory: deployment/shared
-
-      # First Plan: Plan infrastructure changes (excluding Helm release)
-      - name: Terraform Plan (infrastructure only)
-        run: terraform plan -var-file="../$TF_VAR_environment.tfvars" -target=module.acr -target=module.aks -target=module.networking -target=module.storage -out=infra.tfplan
-        working-directory: deployment/shared
-
-      # First Apply: Apply the infrastructure changes from the saved plan
-      - name: Terraform Apply (infrastructure only)
-        run: terraform apply -auto-approve infra.tfplan
-        working-directory: deployment/shared
-
-      - name: Get Terraform Outputs
-        run: |
-          AKS_CLUSTER_NAME=$(terraform output -raw aks_cluster_name)
-          AKS_RESOURCE_GROUP=$(terraform output -raw aks_rg_name)
-          ACR_REGISTRY_NAME=$(terraform output -raw acr_registry_name)
-          echo "AKS_CLUSTER_NAME=$AKS_CLUSTER_NAME" >> $GITHUB_ENV
-          echo "AKS_RESOURCE_GROUP=$AKS_RESOURCE_GROUP" >> $GITHUB_ENV
-          echo "ACR_REGISTRY_NAME=$ACR_REGISTRY_NAME" >> $GITHUB_ENV
-        working-directory: deployment/shared
-
   build-push-deploy:
-    needs: terraform
     runs-on: ubuntu-latest
 
     environment:
-      name: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
+      name: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}"
 
     env:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-
-      ACR_REGISTRY_NAME: ${{ secrets.ACR_REGISTRY_NAME }}
-      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-      DOCKER_IMAGE_NAME_WEBAPP: ${{ vars.DOCKER_IMAGE_NAME_WEBAPP }}
-      TF_VAR_environment: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
-
+      ACR_REGISTRY_NAME: $ACR_REGISTRY_NAME
+      DOCKER_IMAGE_NAME_WEBAPP: ${{ secrets.DOCKER_IMAGE_NAME_WEBAPP }}
       IMAGE_VERSION_WEBAPP: latest
-      AKS_RESOURCE_GROUP: rg-development
-      AKS_CLUSTER_NAME: aks-development
-
+      AKS_CLUSTER_NAME: $AKS_CLUSTER_NAME
+      AKS_RESOURCE_GROUP: $AKS_RESOURCE_GROUP
       KUBECONFIG: /home/runner/.kube/config
       KUBE_CONFIG_PATH: /home/runner/.kube/config
+
+      # Add TF_VAR_environment to ensure it's available
+      # TF_VAR_environment: $TF_VAR_environment
 
     steps:
       - name: Checkout code
@@ -97,7 +36,7 @@ jobs:
       - name: Install kubectl
         uses: azure/setup-kubectl@v4
         with:
-          version: 'latest'  # You can specify a version if needed, e.g., 'v1.22.0'
+          version: 'latest'
 
       - name: Log in to Azure
         uses: azure/login@v2
@@ -105,61 +44,43 @@ jobs:
           creds:  ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: ACR Login
-        run: |
-          az acr login --name $ACR_REGISTRY_NAME
+        run: az acr login --name $ACR_REGISTRY_NAME
 
-      # Fetch AKS Credentials AFTER Terraform Apply
+      # Fetch AKS Credentials
       - name: Get AKS Credentials
         run: |
           az aks get-credentials --resource-group $AKS_RESOURCE_GROUP --name $AKS_CLUSTER_NAME --admin --overwrite-existing
 
-      # Print the current context to verify it's set correctly
-      - name: Kubernetes get contexts, set context and get current-context
+      - name: Print Kubernetes context and check nodes
         run: |
-          kubectl config get-contexts
-          kubectl config use-context $AKS_CLUSTER_NAME-admin
           kubectl config current-context
+          kubectl get nodes
 
-      # Check available nodes to ensure Kubernetes cluster is reachable
-      - name: Check available nodes
-        run: kubectl get nodes
-
-      # Build & Push Docker image to ACR
-      - name: Build & Push Docker image
+      # Build and Push Docker image to ACR
+      - name: Build & Push Docker Image
         run: |
           docker build -t $ACR_REGISTRY_NAME.azurecr.io/$DOCKER_IMAGE_NAME_WEBAPP:$IMAGE_VERSION_WEBAPP .
           docker push $ACR_REGISTRY_NAME.azurecr.io/$DOCKER_IMAGE_NAME_WEBAPP:$IMAGE_VERSION_WEBAPP
           echo "Verifying repository images in ACR..."
           az acr repository list --name $ACR_REGISTRY_NAME --output table
-        working-directory: src/webapp
-
-      # - name: ACR authentication with AKS
-      #   run: az aks update -n $AKS_CLUSTER_NAME -g $AKS_RESOURCE_GROUP --attach-acr $ACR_REGISTRY_NAME
-
-      - name: Create tfvars file from secrets & Print encrypted content
-        run: |
-          cat <<EOF > deployment/$TF_VAR_environment.tfvars
-          ${{ secrets.TFVARS }}
-          EOF
-          cat deployment/$TF_VAR_environment.tfvars
+          echo $TF_VAR_environment
+          echo $TF_VAR_subscription_id
+        working-directory: data-upload-app/src
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      # Terraform Init before Second Plan
-      - name: Terraform Init (webapp/Helm)
+      # Terraform Init before Helm Release
+      - name: Terraform Init (Helm)
         run: terraform init
-        working-directory: deployment/shared
+        working-directory: data-upload-app/deployment
 
-      # Second Plan: Plan the Helm release changes (webapp)
+      # Terraform Plan for Helm Release
       - name: Terraform Plan (Helm release)
-        run: |
-          echo "KUBECONFIG is $KUBECONFIG"
-          echo "KUBE_CONFIG_PATH is $KUBE_CONFIG_PATH"
-          terraform plan -var-file="../$TF_VAR_environment.tfvars" -target=module.webapp -out=webapp.tfplan
-        working-directory: deployment/shared
+        run: terraform plan -var-file="$TF_VAR_environment.tfvars" -out=app.tfplan
+        working-directory: data-upload-app/deployment
 
-      # Second Apply: Apply the Helm release from the saved plan
+      # Apply Helm Release using Terraform
       - name: Terraform Apply (Helm release)
-        run: terraform apply -auto-approve webapp.tfplan
-        working-directory: deployment/shared
+        run: terraform apply -auto-approve app.tfplan
+        working-directory: data-upload-app/deployment

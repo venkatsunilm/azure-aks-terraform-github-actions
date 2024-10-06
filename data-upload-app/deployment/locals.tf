@@ -1,3 +1,5 @@
 locals {
-  app_name = "data-upload-app"
+  resource_group_name = "rg-${var.environment}"
+  location            = var.location
+  environment         = var.environment
 }
