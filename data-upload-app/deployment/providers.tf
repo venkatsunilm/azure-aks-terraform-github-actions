@@ -19,7 +19,7 @@ provider "helm" {
   kubernetes {
     config_path = "/home/runner/.kube/config"
     # config_path = "/mnt/c/Users/harit/.kube/config"
-    # config_path = var.environment == "production" ? "/home/runner/.kube/config" : "/mnt/c/Users/harit/.kube/config"
+    # config_path = var.environment == "prod" ? "/home/runner/.kube/config" : "/mnt/c/Users/harit/.kube/config"
   }
 
   alias = "aks"

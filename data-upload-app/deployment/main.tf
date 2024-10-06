@@ -8,13 +8,17 @@ module "app" {
 =======
 # https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release
 
-resource "helm_release" "data-upload-webapp" {
+resource "helm_release" "data-upload-app" {
   name  = local.app_name
-  chart = "${path.module}/webapp-chart" # Adjust path to webapp-chart
+  chart = "${path.module}/app-chart" # Adjust path to app-chart
 
   values = [
-    file("${path.module}/webapp-chart/${var.environment}-values.yaml") # Adjust for environment-specific values
+    file("${path.module}/app-chart/${var.environment}-values.yaml") # Adjust for environment-specific values
   ]
 
 }
+<<<<<<< HEAD
 >>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
+=======
+
+>>>>>>> 6debb0f (Refactor: code cleanup and renaming (#32))

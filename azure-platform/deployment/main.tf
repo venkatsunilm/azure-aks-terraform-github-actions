@@ -79,7 +79,7 @@ module "storage" {
   subscription_id      = var.subscription_id
 }
 
-module "webapp" {
+module "app" {
   source          = "../../data-upload-app/deployment"
   environment     = local.environment
   subscription_id = var.subscription_id
