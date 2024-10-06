@@ -1,22 +1,22 @@
 # Create docker image and container
 
-docker build -t data-upload-webapp .
-docker run -d -p 8000:8000 data-upload-webapp
+docker build -t data-upload-app .
+docker run -d -p 8000:8000 data-upload-app
 
 # Create RG
 
-az group create --name rg-acr-development --location eastus
+az group create --name rg-acr-dev --location eastus
 
 # Login and create ACR
 
 az acr login --name venkatsunilm
-az acr create --resource-group rg-acr-development --name venkatsunilm --sku Basic
+az acr create --resource-group rg-acr-dev --name venkatsunilm --sku Basic
 
 # Push Docker Image to Container Registry:
 
-docker tag data-upload-webapp venkatsunilm.azurecr.io/data-upload-webapp:latest
-docker push venkatsunilm.azurecr.io/data-upload-webapp:latest
+docker tag data-upload-app venkatsunilm.azurecr.io/data-upload-app:latest
+docker push venkatsunilm.azurecr.io/data-upload-app:latest
 
 <!-- acr_registry_name = "venkatsunilm"
-aks_cluster_name = "aks-development"
-aks_rg_name = "rg-development" -->
+aks_cluster_name = "aks-dev"
+aks_rg_name = "rg-dev" -->
