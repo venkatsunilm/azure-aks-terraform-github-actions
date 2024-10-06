@@ -10,7 +10,7 @@ resource "azurerm_resource_group" "acr_rg" {
 }
 
 module "acr" {
-  source              = "../../modules/acr"
+  source              = "../modules/acr"
   registry_name       = local.registry_name
   resource_group_name = azurerm_resource_group.acr_rg.name
   location            = azurerm_resource_group.acr_rg.location
@@ -18,7 +18,7 @@ module "acr" {
 }
 
 module "aks" {
-  source              = "../../modules/aks"
+  source              = "../modules/aks"
   cluster_name        = local.cluster_name
   node_count          = var.node_count
   environment         = local.environment
@@ -31,7 +31,7 @@ module "aks" {
 }
 
 module "networking" {
-  source              = "../../modules/networking"
+  source              = "../modules/networking"
   vnet_name           = local.vnet_name
   subnet_name         = local.subnet_name
   resource_group_name = azurerm_resource_group.rg.name
@@ -48,7 +48,7 @@ resource "random_string" "storage_suffix" {
 }
 
 module "storage" {
-  source               = "../../modules/storage"
+  source               = "../modules/storage"
   storage_account_name = local.storage_account_name
   resource_group_name  = azurerm_resource_group.rg.name
   environment          = local.environment
@@ -57,7 +57,7 @@ module "storage" {
 }
 
 module "webapp" {
-  source          = "../../modules/webapp"
+  source          = "../../data-upload-app/deployment"
   environment     = local.environment
   subscription_id = var.subscription_id
 }
