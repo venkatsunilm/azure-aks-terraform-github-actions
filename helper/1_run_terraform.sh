@@ -4,8 +4,8 @@ set -e
 # Directory to run Terraform commands
 TF_DIR="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/azure-platform/deployment"
 
-# Set the environment variable to development
-export TF_VAR_environment="development"
+# Set the environment variable to dev
+export TF_VAR_environment="dev"
 
 # Log file to capture the output
 LOG_FILE="terraform_apply_output.log"

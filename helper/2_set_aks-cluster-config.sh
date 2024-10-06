@@ -1,6 +1,12 @@
-# Variables
-export AKS_RESOURCE_GROUP="rg-development"
-export AKS_CLUSTER_NAME="aks-development"
+# Call local_env_setup.sh to export necessary environment variables
+source "/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/helper/0_local_env_setup.sh"
+
+# Check if AKS_CLUSTER_NAME is exported correctly
+if [ -z "$AKS_CLUSTER_NAME" ]; then
+  echo "Error: AKS_CLUSTER_NAME is not set. Please ensure it is exported in local_env_setup.sh."
+  exit 1
+fi
+
 HOME="/mnt/c/Users/harit"
 KUBECONFIG_PATH="$HOME/.kube/config"  # Default kubeconfig path (you can adjust if needed)
 
