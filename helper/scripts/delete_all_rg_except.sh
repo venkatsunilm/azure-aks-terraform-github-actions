@@ -1,4 +1,4 @@
-APP_PATH="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/helper"
+APP_PATH="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/helper/scripts"
 
 # 1. Navigate to the directory where the Dockerfile is located
 echo "Navigating to $APP_PATH..."

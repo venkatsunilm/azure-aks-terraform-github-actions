@@ -1,7 +1,11 @@
-variable "environment" {
-  description = "environment name"
+variable "location" {
+  description = "The location name"
   type        = string
-  # default     = "dev"
+}
+
+variable "environment" {
+  description = "The environment (dev or prod)"
+  type        = string
 }
 
 variable "subscription_id" {

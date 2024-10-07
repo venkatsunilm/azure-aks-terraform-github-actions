@@ -18,5 +18,10 @@ variable "subscription_id" {
   type        = string
 }
 
+variable "environment" {
+  description = "The environment (e.g., dev, prod)"
+  type        = string
+}
+
 
 

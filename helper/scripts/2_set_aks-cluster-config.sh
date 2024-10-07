@@ -1,5 +1,7 @@
 # Call local_env_setup.sh to export necessary environment variables
-source "/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/helper/0_local_env_setup.sh"
+# source "/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/helper/scripts/0_local_env_setup.sh"
+
+cd "$TF_DIR" || { echo "Directory $TF_DIR not found"; exit 1; }
 
 # Check if AKS_CLUSTER_NAME is exported correctly
 if [ -z "$AKS_CLUSTER_NAME" ]; then
@@ -7,12 +9,14 @@ if [ -z "$AKS_CLUSTER_NAME" ]; then
   exit 1
 fi
 
-HOME="/mnt/c/Users/harit"
-KUBECONFIG_PATH="$HOME/.kube/config"  # Default kubeconfig path (you can adjust if needed)
+az account show
 
 # 1. Get AKS Credentials
 echo "Fetching AKS credentials for cluster $AKS_CLUSTER_NAME in resource group $AKS_RESOURCE_GROUP..."
 az aks get-credentials --resource-group $AKS_RESOURCE_GROUP --name $AKS_CLUSTER_NAME --admin --overwrite-existing
+
+HOME="/mnt/c/Users/harit"
+KUBECONFIG_PATH="$HOME/.kube/config"  # Default kubeconfig path (you can adjust if needed)
 
 export KUBECONFIG=$HOME/.kube/config
 export KUBE_CONFIG_PATH=$HOME/.kube/config
@@ -42,5 +46,8 @@ kubectl get nodes
 # 6. Get the pods in the current namespace
 echo "Fetching pods in the current namespace:"
 kubectl get pods
+
+echo "verify the service"
+kubectl get services
 
 echo "Done."

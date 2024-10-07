@@ -1,7 +1,7 @@
 # Call local_env_setup.sh to export necessary environment variables
-source "/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/helper/0_local_env_setup.sh"
+# source "/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/helper/scripts/0_local_env_setup.sh"
 
-APP_PATH="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/data-upload-app/src"
+# APP_PATH="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/data-upload-app/src"
 
 # Check if SUBSCRIPTION_ID is exported correctly
 if [ -z "$ARM_SUBSCRIPTION_ID" ]; then
@@ -13,15 +13,19 @@ fi
 echo "Navigating to $APP_PATH..."
 cd "$APP_PATH" || { echo "Directory $APP_PATH not found. Exiting."; exit 1; }
 
+# Debugging: Display Docker info before the build
+docker info
+
 # 2. Build the Docker image (latest tag is implied)
-echo "Building Docker image: $DOCKER_IMAGE_NAME..."
-docker build -t $DOCKER_IMAGE_NAME .
+echo "Building Docker image: $DOCKER_IMAGE_NAME"
+docker buildx build -t $DOCKER_IMAGE_NAME .
 
 # 3. Run Docker container locally (optional, for local testing)
 # echo "Running Docker container locally..."
 # docker run -d -p $DOCKER_PORT:$DOCKER_PORT $DOCKER_IMAGE_NAME
 
 # 4. Check if Resource Group for ACR already exists
+az account show
 echo "Checking if resource group $ACR_RESOURCE_GROUP exists..."
 RG_EXISTS=$(az group exists --name $ACR_RESOURCE_GROUP | tr -d '[:space:]')
 

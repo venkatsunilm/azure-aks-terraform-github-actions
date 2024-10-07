@@ -44,6 +44,5 @@ venv/
 kubectl
 *.terraform.tfstate.lock.info
 .env
-helper/0_local_env_setup.sh
-helper/tf_backend_storage.sh
-terraform_apply_output
+helper/scripts/0_local_env_setup.sh
+helper/scripts/tf_backend_storage.sh
