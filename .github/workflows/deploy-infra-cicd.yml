@@ -16,15 +16,16 @@ jobs:
     runs-on: ubuntu-latest
 
     environment:
-      name: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}"
+      name: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
 
     env:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-      TF_VAR_environment: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
-      TF_VAR_subscription_id: $ARM_SUBSCRIPTION_ID
+
+      TF_VAR_environment: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}"
+      TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
     steps:
       - name: Checkout code
@@ -42,7 +43,9 @@ jobs:
 
       # Terraform Init (for Infrastructure)
       - name: Terraform Init (Infrastructure)
-        run: terraform init
+        run: |
+          echo $TF_VAR_subscription_id  
+          terraform init
         working-directory: azure-platform/deployment
 
       # Terraform Plan (for Infrastructure)
