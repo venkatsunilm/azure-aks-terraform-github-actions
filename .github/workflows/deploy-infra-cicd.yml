@@ -46,17 +46,22 @@ jobs:
 
     environment:
 <<<<<<< HEAD
+<<<<<<< HEAD
       name: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
 >>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
 =======
       name: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}"
 >>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
+=======
+      name: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
+>>>>>>> 05d12eb (Feat: continue working on the main feature and fix the pipeline to work (#34))
 
     env:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
       TF_VAR_environment: ${{ matrix.environment }}
@@ -69,6 +74,11 @@ jobs:
       TF_VAR_environment: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
       TF_VAR_subscription_id: $ARM_SUBSCRIPTION_ID
 >>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
+=======
+
+      TF_VAR_environment: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}"
+      TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+>>>>>>> 05d12eb (Feat: continue working on the main feature and fix the pipeline to work (#34))
 
     steps:
       - name: Checkout code
@@ -106,7 +116,9 @@ jobs:
 
       # Terraform Init (for Infrastructure)
       - name: Terraform Init (Infrastructure)
-        run: terraform init
+        run: |
+          echo $TF_VAR_subscription_id  
+          terraform init
         working-directory: azure-platform/deployment
 
       # Terraform Plan (for Infrastructure)
