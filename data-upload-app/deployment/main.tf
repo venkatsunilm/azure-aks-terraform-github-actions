@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 module "app" {
   source             = "../modules"
   environment        = local.environment
@@ -22,3 +23,9 @@ resource "helm_release" "data-upload-app" {
 =======
 
 >>>>>>> 6debb0f (Refactor: code cleanup and renaming (#32))
+=======
+module "app" {
+  source      = "../modules"
+  environment = local.environment
+}
+>>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))

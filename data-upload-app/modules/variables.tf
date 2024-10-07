@@ -3,6 +3,7 @@ variable "environment" {
   type        = string
 }
 
+<<<<<<< HEAD
 variable "kubeconfig_path" {
   description = "Path to the Kubernetes config file"
   type        = string
@@ -18,3 +19,5 @@ variable "aks_resource_group" {
   description = "The name of the AKS resource group"
   type        = string
 }
+=======
+>>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))

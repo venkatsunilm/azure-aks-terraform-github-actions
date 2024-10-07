@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 location    = "East US"
 node_count  = 2
 environment = "dev"
@@ -10,5 +11,10 @@ location        = "East US"
 node_count      = 2
 environment     = "dev"
 >>>>>>> 6debb0f (Refactor: code cleanup and renaming (#32))
+=======
+location    = "East US"
+node_count  = 2
+environment = "dev"
+>>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
 
 

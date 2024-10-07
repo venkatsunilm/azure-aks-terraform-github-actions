@@ -1,156 +1,62 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-name: Deploy Infrastructure
-=======
 name: Terraform & Web App CI/CD Workflow
->>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
-=======
-name: Deploy Infrastructure
->>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
 
 on:
-  pull_request:
-    branches:
-      - develop
-      - main
-<<<<<<< HEAD
-  
   push:
     branches:
-      - hotfix*
-      - feat_*
-
-jobs:
-  deploy-infrastructure:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      max-parallel: 1
-      matrix:
-        environment: ['dev', 'prod']
-        exclude:
-          - environment: ${{ github.base_ref != 'refs/heads/develop' && 'prod' }}
-
-    environment:
-      name: "${{ matrix.environment }}"
-=======
-  push:
-    branches:
-      - develop
-      - main
-      - feat_*
+      - test_*
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
 
     environment:
-<<<<<<< HEAD
-      name: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
->>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
-=======
       name: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}"
->>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
 
     env:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-<<<<<<< HEAD
-<<<<<<< HEAD
-      TF_VAR_environment: ${{ matrix.environment }}
-      TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-=======
 
-      TF_VAR_environment: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
->>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
-=======
-      TF_VAR_environment: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
-      TF_VAR_subscription_id: $ARM_SUBSCRIPTION_ID
->>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
+      TF_VAR_environment: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}"
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-      - name: Invoke Terraform Composite Action
-        uses: ./.github/actions/terraform-action
-        with:
-          environment: ${{ matrix.environment }}
-          working-directory: ./azure-platform/deployment
-          backend-state-name: infrastructure
-    
-
-      - name: Capture Outputs and Save as JSON
-=======
       - name: Create tfvars file from secrets & Print encrypted content
         run: |
           cat <<EOF > deployment/$TF_VAR_environment.tfvars
           ${{ secrets.TFVARS }}
           EOF
           cat deployment/$TF_VAR_environment.tfvars
-=======
-      # - name: Create tfvars file from secrets & Print encrypted content
-      #   run: |
-      #     cat <<EOF > deployment/$TF_VAR_environment.tfvars
-      #     ${{ secrets.TFVARS }}
-      #     EOF
-      #     cat deployment/$TF_VAR_environment.tfvars
->>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      # Terraform Init (for Infrastructure)
-      - name: Terraform Init (Infrastructure)
+      # Terraform Init before First Plan
+      - name: Terraform Init (infrastructure)
         run: terraform init
-        working-directory: azure-platform/deployment
+        working-directory: deployment/shared
 
-      # Terraform Plan (for Infrastructure)
-      - name: Terraform Plan (Infrastructure)
-        run: terraform plan -var-file="$TF_VAR_environment.tfvars" -out=infra.tfplan
-        working-directory: azure-platform/deployment
+      # First Plan: Plan infrastructure changes (excluding Helm release)
+      - name: Terraform Plan (infrastructure only)
+        run: terraform plan -var-file="../$TF_VAR_environment.tfvars" -target=module.acr -target=module.aks -target=module.networking -target=module.storage -out=infra.tfplan
+        working-directory: deployment/shared
 
-      # Terraform Apply (for Infrastructure)
-      - name: Terraform Apply (Infrastructure)
+      # First Apply: Apply the infrastructure changes from the saved plan
+      - name: Terraform Apply (infrastructure only)
         run: terraform apply -auto-approve infra.tfplan
-        working-directory: azure-platform/deployment
+        working-directory: deployment/shared
 
-<<<<<<< HEAD
       - name: Get Terraform Outputs
->>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
-=======
-      # Capture Outputs
-      - name: Capture Terraform Outputs
->>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
         run: |
           AKS_CLUSTER_NAME=$(terraform output -raw aks_cluster_name)
           AKS_RESOURCE_GROUP=$(terraform output -raw aks_rg_name)
           ACR_REGISTRY_NAME=$(terraform output -raw acr_registry_name)
-<<<<<<< HEAD
-
-          # Create a JSON file with the outputs
-          echo '{
-            "AKS_CLUSTER_NAME": "'$AKS_CLUSTER_NAME'",
-            "AKS_RESOURCE_GROUP": "'$AKS_RESOURCE_GROUP'",
-            "ACR_REGISTRY_NAME": "'$ACR_REGISTRY_NAME'",
-            "TF_VAR_environment": "'${{ matrix.environment }}'"
-          }' > ${{ github.workspace }}/infrastructure-outputs.json
-        working-directory: azure-platform/deployment
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4.4.3
-        with:
-          name: infra-outputs-${{ matrix.environment }}
-          path: ${{ github.workspace }}/infrastructure-outputs.json
-=======
           echo "AKS_CLUSTER_NAME=$AKS_CLUSTER_NAME" >> $GITHUB_ENV
           echo "AKS_RESOURCE_GROUP=$AKS_RESOURCE_GROUP" >> $GITHUB_ENV
           echo "ACR_REGISTRY_NAME=$ACR_REGISTRY_NAME" >> $GITHUB_ENV
-<<<<<<< HEAD
         working-directory: deployment/shared
 
   build-push-deploy:
@@ -158,7 +64,7 @@ jobs:
     runs-on: ubuntu-latest
 
     environment:
-      name: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
+      name: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}"
 
     env:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
@@ -169,11 +75,11 @@ jobs:
       ACR_REGISTRY_NAME: ${{ secrets.ACR_REGISTRY_NAME }}
       AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       DOCKER_IMAGE_NAME_WEBAPP: ${{ vars.DOCKER_IMAGE_NAME_WEBAPP }}
-      TF_VAR_environment: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
+      TF_VAR_environment: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}"
 
       IMAGE_VERSION_WEBAPP: latest
-      AKS_RESOURCE_GROUP: rg-development
-      AKS_CLUSTER_NAME: aks-development
+      AKS_RESOURCE_GROUP: rg-dev
+      AKS_CLUSTER_NAME: aks-dev
 
       KUBECONFIG: /home/runner/.kube/config
       KUBE_CONFIG_PATH: /home/runner/.kube/config
@@ -251,9 +157,3 @@ jobs:
       - name: Terraform Apply (Helm release)
         run: terraform apply -auto-approve webapp.tfplan
         working-directory: deployment/shared
->>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
-=======
-          echo "TF_VAR_environment=$TF_VAR_environment" >> $GITHUB_ENV
-          echo "TF_VAR_subscription_id=$TF_VAR_subscription_id" >> $GITHUB_ENV
-        working-directory: azure-platform/deployment
->>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))

@@ -4,9 +4,12 @@ resource "azurerm_resource_group" "rg" {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 # Create Resource Group for ACR
 >>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
+=======
+>>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
 resource "azurerm_resource_group" "acr_rg" {
   name     = local.acr_resource_group_name
   location = local.location
@@ -18,9 +21,13 @@ module "acr" {
   resource_group_name = azurerm_resource_group.acr_rg.name
   location            = azurerm_resource_group.acr_rg.location
 <<<<<<< HEAD
+<<<<<<< HEAD
   environment         = local.environment
 =======
 >>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
+=======
+  environment         = local.environment
+>>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
   subscription_id     = var.subscription_id
 }
 
@@ -78,6 +85,7 @@ module "storage" {
   location             = azurerm_resource_group.rg.location
   subscription_id      = var.subscription_id
 }
+<<<<<<< HEAD
 
 module "app" {
   source          = "../../data-upload-app/deployment"
@@ -85,3 +93,5 @@ module "app" {
   subscription_id = var.subscription_id
 }
 >>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
+=======
+>>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))

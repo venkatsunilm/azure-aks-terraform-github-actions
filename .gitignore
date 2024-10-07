@@ -101,6 +101,7 @@ kubectl
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 895554b (Upgrade: Update terraform core and azurerm (#17))
 =======
 environments/shared/local_env_setup.sh
@@ -114,3 +115,7 @@ helper/0_local_env_setup.sh
 helper/tf_backend_storage.sh
 terraform_apply_output
 >>>>>>> 00a6b5e (Doc: Update README file and add few project assets (#30))
+=======
+helper/scripts/0_local_env_setup.sh
+helper/scripts/tf_backend_storage.sh
+>>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))

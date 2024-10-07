@@ -5,7 +5,11 @@ environment: dev
 replicas: 1
 
 image:
+<<<<<<< HEAD
   repository: venkatsunilmdev.azurecr.io
+=======
+  repository: venkatsunilm.azurecr.io
+>>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
   name: data-upload-app
   tag: "latest"
   pullPolicy: IfNotPresent

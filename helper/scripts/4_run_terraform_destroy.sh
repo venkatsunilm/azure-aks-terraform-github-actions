@@ -1,6 +1,7 @@
 # Call local_env_setup.sh to export necessary environment variables
 source "/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/helper/scripts/0_local_env_setup.sh"
 
+<<<<<<< HEAD
 # Set common directories for Terraform
 TF_INFRA_DIR="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/azure-platform/deployment"
 TF_APP_DIR="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/data-upload-app/deployment"
@@ -38,3 +39,33 @@ echo "Running resource group cleanup script..."
 /mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/helper/scripts/delete_all_rg_except.sh
 
 echo "Terraform destroy and resource group cleanup completed successfully."
+=======
+TF_APP_DIR="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/data-upload-app/deployment"
+
+# Change to the directory where Terraform files are located
+cd "$TF_APP_DIR" || { echo "Directory $TF_APP_DIR not found"; exit 1; }
+
+# Apply with the specified environment variable and auto-approve, saving output to a file
+echo "Applying Terraform configuration for environment: $TF_VAR_environment"
+if ! terraform destroy -var-file="./$TF_VAR_environment.tfvars" -auto-approve; then
+  echo "Terraform apply failed!"
+  exit 1
+fi
+
+# Directory to run Terraform commands
+TF_INFRA_DIR="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/azure-platform/deployment"
+
+# Set the environment variable to dev
+# export TF_VAR_environment="dev"
+
+# Change to the directory where Terraform files are located
+cd "$TF_INFRA_DIR" || { echo "Directory $TF_INFRA_DIR not found"; exit 1; }
+
+# Apply with the specified environment variable and auto-approve, saving output to a file
+echo "Applying Terraform configuration for environment: $TF_VAR_environment"
+if ! terraform destroy -var-file="./$TF_VAR_environment.tfvars" -auto-approve; then
+  echo "Terraform apply failed!"
+  exit 1
+fi
+
+>>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))

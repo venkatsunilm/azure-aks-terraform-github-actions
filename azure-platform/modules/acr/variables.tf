@@ -19,12 +19,18 @@ variable "subscription_id" {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
 variable "environment" {
   description = "The environment (e.g., dev, prod)"
   type        = string
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
+=======
+>>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
 
 
