@@ -29,4 +29,4 @@ if ! terraform destroy -var-file="./$TF_VAR_environment.tfvars" -auto-approve; t
   exit 1
 fi
 
-
+../../helper/scripts/delete_all_rg_except.sh 
