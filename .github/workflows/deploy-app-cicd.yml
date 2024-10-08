@@ -1,0 +1,91 @@
+name: Deploy Web App
+
+on:
+  workflow_run:
+    workflows: ["Deploy Infrastructure"]
+    types:
+      - completed
+  # workflow_dispatch:  # Temporary manual trigger for testing
+
+jobs:
+  build-push-deploy:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
+
+    permissions:  # Explicit permissions to ensure actions can trigger each other
+      actions: write
+      contents: write
+
+    env:
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      ACR_REGISTRY_NAME: $ACR_REGISTRY_NAME
+      DOCKER_IMAGE_NAME_WEBAPP: ${{ secrets.DOCKER_IMAGE_NAME_WEBAPP }}
+      IMAGE_VERSION_WEBAPP: latest
+      AKS_CLUSTER_NAME: $AKS_CLUSTER_NAME
+      AKS_RESOURCE_GROUP: $AKS_RESOURCE_GROUP
+      KUBECONFIG: /home/runner/.kube/config
+      KUBE_CONFIG_PATH: /home/runner/.kube/config
+
+      # Add TF_VAR_environment to ensure it's available
+      # TF_VAR_environment: $TF_VAR_environment
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'latest'
+
+      - name: Log in to Azure
+        uses: azure/login@v2
+        with:
+          creds:  ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: ACR Login
+        run: az acr login --name $ACR_REGISTRY_NAME
+
+      # Fetch AKS Credentials
+      - name: Get AKS Credentials
+        run: |
+          az aks get-credentials --resource-group $AKS_RESOURCE_GROUP --name $AKS_CLUSTER_NAME --admin --overwrite-existing
+
+      - name: Print Kubernetes context and check nodes
+        run: |
+          kubectl config current-context
+          kubectl get nodes
+
+      # Build and Push Docker image to ACR
+      - name: Build & Push Docker Image
+        run: |
+          docker build -t $ACR_REGISTRY_NAME.azurecr.io/$DOCKER_IMAGE_NAME_WEBAPP:$IMAGE_VERSION_WEBAPP .
+          docker push $ACR_REGISTRY_NAME.azurecr.io/$DOCKER_IMAGE_NAME_WEBAPP:$IMAGE_VERSION_WEBAPP
+          echo "Verifying repository images in ACR..."
+          az acr repository list --name $ACR_REGISTRY_NAME --output table
+          echo $TF_VAR_environment
+          echo $TF_VAR_subscription_id
+        working-directory: data-upload-app/src
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      # Terraform Init before Helm Release
+      - name: Terraform Init (Helm)
+        run: terraform init
+        working-directory: data-upload-app/deployment
+
+      # Terraform Plan for Helm Release
+      - name: Terraform Plan (Helm release)
+        run: terraform plan -var-file="$TF_VAR_environment.tfvars" -out=app.tfplan
+        working-directory: data-upload-app/deployment
+
+      # Apply Helm Release using Terraform
+      - name: Terraform Apply (Helm release)
+        run: terraform apply -auto-approve app.tfplan
+        working-directory: data-upload-app/deployment
