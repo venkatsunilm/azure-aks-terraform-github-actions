@@ -5,13 +5,18 @@ on:
     workflows: ["Deploy Infrastructure"]
     types:
       - completed
+  workflow_dispatch:
 
 jobs:
   build-push-deploy:
     runs-on: ubuntu-latest
 
     environment:
-      name: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}"
+      name: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
+
+    permissions:
+      actions: write
+      contents: write
 
     env:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
