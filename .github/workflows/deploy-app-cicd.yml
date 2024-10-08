@@ -7,8 +7,12 @@ on:
     workflows: ["Deploy Infrastructure"]
     types:
       - completed
+<<<<<<< HEAD
   workflow_dispatch:
 <<<<<<< HEAD
+=======
+  # workflow_dispatch:
+>>>>>>> 648ec81 (Fix(Helper_scripts): few tweaks to correct the destroy flow (#36) (#37))
 
 jobs:
   build-push-deploy:

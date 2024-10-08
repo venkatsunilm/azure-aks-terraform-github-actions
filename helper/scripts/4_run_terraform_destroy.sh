@@ -86,5 +86,9 @@ if ! terraform destroy -var-file="./$TF_VAR_environment.tfvars" -auto-approve; t
   exit 1
 fi
 
+<<<<<<< HEAD
 
 >>>>>>> f27cb71 (Fix(Helper_scripts): few tweaks to correct the destroy flow (#36))
+=======
+../../helper/scripts/delete_all_rg_except.sh 
+>>>>>>> 648ec81 (Fix(Helper_scripts): few tweaks to correct the destroy flow (#36) (#37))
