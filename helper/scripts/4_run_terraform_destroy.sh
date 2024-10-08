@@ -2,6 +2,7 @@
 source "/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/helper/scripts/0_local_env_setup.sh"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Set common directories for Terraform
 TF_INFRA_DIR="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/azure-platform/deployment"
 TF_APP_DIR="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/data-upload-app/deployment"
@@ -52,6 +53,8 @@ if ! terraform destroy -var-file="./$TF_VAR_environment.tfvars" -auto-approve; t
   exit 1
 fi
 
+=======
+>>>>>>> f27cb71 (Fix(Helper_scripts): few tweaks to correct the destroy flow (#36))
 # Directory to run Terraform commands
 TF_INFRA_DIR="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/azure-platform/deployment"
 
@@ -68,4 +71,20 @@ if ! terraform destroy -var-file="./$TF_VAR_environment.tfvars" -auto-approve; t
   exit 1
 fi
 
+<<<<<<< HEAD
 >>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
+=======
+TF_APP_DIR="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/data-upload-app/deployment"
+
+# Change to the directory where Terraform files are located
+cd "$TF_APP_DIR" || { echo "Directory $TF_APP_DIR not found"; exit 1; }
+
+# Apply with the specified environment variable and auto-approve, saving output to a file
+echo "Applying Terraform configuration for environment: $TF_VAR_environment"
+if ! terraform destroy -var-file="./$TF_VAR_environment.tfvars" -auto-approve; then
+  echo "Terraform apply failed!"
+  exit 1
+fi
+
+
+>>>>>>> f27cb71 (Fix(Helper_scripts): few tweaks to correct the destroy flow (#36))

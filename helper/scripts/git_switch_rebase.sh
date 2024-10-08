@@ -1,9 +1,14 @@
+<<<<<<< HEAD
 # Exit the script on any error
 set -e
+=======
+#!/bin/bash
+>>>>>>> f27cb71 (Fix(Helper_scripts): few tweaks to correct the destroy flow (#36))
 
 # Get the current branch name
 current_branch=$(git branch --show-current)
 
+<<<<<<< HEAD
 # Check for uncommitted changes
 if [[ -n $(git status --porcelain) ]]; then
   echo "Uncommitted changes detected. Stashing changes before switching branches..."
@@ -34,10 +39,33 @@ fi
 if [ "$current_branch" != "develop" ]; then
   echo "Switching back to $current_branch..."
   git checkout "$current_branch" || { echo "Failed to switch back to $current_branch"; exit 1; }
+=======
+# Fetch the latest updates and prune stale remote-tracking branches
+echo "Fetching latest changes and pruning stale remote branches..."
+git fetch --prune
+
+# Check if we are already on the develop branch
+if [ "$current_branch" == "develop" ]; then
+  echo "Already on develop branch. Pulling the latest changes."
+else
+  echo "Switching to develop branch..."
+  git checkout develop
+fi
+
+# Pull the latest changes from develop
+echo "Pulling latest changes from develop..."
+git pull origin develop
+
+# Switch back to the previous branch
+if [ "$current_branch" != "develop" ]; then
+  echo "Switching back to $current_branch..."
+  git checkout "$current_branch"
+>>>>>>> f27cb71 (Fix(Helper_scripts): few tweaks to correct the destroy flow (#36))
 fi
 
 # Rebase the current branch onto develop
 echo "Rebasing $current_branch onto develop..."
+<<<<<<< HEAD
 git rebase develop || { echo "Rebase failed"; exit 1; }
 
 # Apply the stash if changes were stashed earlier
@@ -45,5 +73,8 @@ if [ "$stash_applied" = true ]; then
   echo "Re-applying stashed changes..."
   git stash pop || { echo "Failed to reapply stashed changes"; exit 1; }
 fi
+=======
+git rebase develop
+>>>>>>> f27cb71 (Fix(Helper_scripts): few tweaks to correct the destroy flow (#36))
 
 echo "Rebase completed successfully!"

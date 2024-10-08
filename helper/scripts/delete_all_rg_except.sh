@@ -47,10 +47,14 @@ az monitor log-analytics workspace delete --resource-group MA_defaultazuremonito
 
 # Define the list of resource groups you want to keep
 <<<<<<< HEAD
+<<<<<<< HEAD
 KEEP_RGS=("rg-terraform-backen" "rg-to-keep-2" "rg-to-keep-3")
 =======
 KEEP_RGS=("rg-terraform-backend" "rg-to-keep-2" "rg-to-keep-3")
 >>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
+=======
+KEEP_RGS=("rg-terraform-backen" "rg-to-keep-2" "rg-to-keep-3")
+>>>>>>> f27cb71 (Fix(Helper_scripts): few tweaks to correct the destroy flow (#36))
 
 # Get the list of all resource groups
 # ALL_RGS=$(az group list --query "[].name" -o tsv)

@@ -8,6 +8,7 @@ on:
     types:
       - completed
   workflow_dispatch:
+<<<<<<< HEAD
 
 jobs:
   build-push-deploy:
@@ -40,6 +41,8 @@ on:
     workflows: ["Deploy Infrastructure"]
     types:
       - completed
+=======
+>>>>>>> f27cb71 (Fix(Helper_scripts): few tweaks to correct the destroy flow (#36))
 
 jobs:
 <<<<<<< HEAD
@@ -159,7 +162,11 @@ jobs:
     runs-on: ubuntu-latest
 
     environment:
-      name: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}"
+      name: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
+
+    permissions:
+      actions: write
+      contents: write
 
     env:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
