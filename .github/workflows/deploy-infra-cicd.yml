@@ -5,68 +5,59 @@ on:
     branches:
       - develop
       - main
+  
   push:
     branches:
-      - develop
-      - main
+      - hotfix*
       - feat_*
 
 jobs:
-  terraform:
+  deploy-infrastructure:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: ['dev', 'prod']
+        exclude:
+          - environment: ${{ github.ref != 'refs/heads/develop' && 'prod' }}
 
     environment:
-      name: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
+      name: "${{ matrix.environment }}"
 
     env:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-
-      TF_VAR_environment: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}"
+      TF_VAR_environment: ${{ matrix.environment }}
       TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # - name: Create tfvars file from secrets & Print encrypted content
-      #   run: |
-      #     cat <<EOF > deployment/$TF_VAR_environment.tfvars
-      #     ${{ secrets.TFVARS }}
-      #     EOF
-      #     cat deployment/$TF_VAR_environment.tfvars
+      - name: Invoke Terraform Composite Action
+        uses: ./.github/actions/terraform-action
+        with:
+          environment: ${{ matrix.environment }}
+          working-directory: ./azure-platform/deployment
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      # Terraform Init (for Infrastructure)
-      - name: Terraform Init (Infrastructure)
-        run: |
-          echo $TF_VAR_subscription_id  
-          terraform init
-        working-directory: azure-platform/deployment
-
-      # Terraform Plan (for Infrastructure)
-      - name: Terraform Plan (Infrastructure)
-        run: terraform plan -var-file="$TF_VAR_environment.tfvars" -out=infra.tfplan
-        working-directory: azure-platform/deployment
-
-      # Terraform Apply (for Infrastructure)
-      - name: Terraform Apply (Infrastructure)
-        run: terraform apply -auto-approve infra.tfplan
-        working-directory: azure-platform/deployment
-
-      # Capture Outputs
-      - name: Capture Terraform Outputs
+      - name: Capture Outputs and Save as JSON
         run: |
           AKS_CLUSTER_NAME=$(terraform output -raw aks_cluster_name)
           AKS_RESOURCE_GROUP=$(terraform output -raw aks_rg_name)
           ACR_REGISTRY_NAME=$(terraform output -raw acr_registry_name)
-          echo "AKS_CLUSTER_NAME=$AKS_CLUSTER_NAME" >> $GITHUB_ENV
-          echo "AKS_RESOURCE_GROUP=$AKS_RESOURCE_GROUP" >> $GITHUB_ENV
-          echo "ACR_REGISTRY_NAME=$ACR_REGISTRY_NAME" >> $GITHUB_ENV
-          echo "TF_VAR_environment=$TF_VAR_environment" >> $GITHUB_ENV
-          echo "TF_VAR_subscription_id=$TF_VAR_subscription_id" >> $GITHUB_ENV
+
+          # Create a JSON file with the outputs
+          echo '{
+            "AKS_CLUSTER_NAME": "'$AKS_CLUSTER_NAME'",
+            "AKS_RESOURCE_GROUP": "'$AKS_RESOURCE_GROUP'",
+            "ACR_REGISTRY_NAME": "'$ACR_REGISTRY_NAME'"
+          }' > ${{ github.workspace }}/infrastructure-outputs.json
         working-directory: azure-platform/deployment
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: infra-outputs
+          path: ${{ github.workspace }}/infrastructure-outputs.json

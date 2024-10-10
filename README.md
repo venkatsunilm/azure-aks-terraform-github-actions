@@ -27,7 +27,7 @@ Contains the main Terraform configuration files that define and manage the infra
 - **outputs.tf**: Specifies the output variables, such as the AKS cluster name or public IP, that are available after the infrastructure is provisioned.
 - **dev.tfvars** and **prod.tfvars**: Environment-specific variable files for dev and prod, ensuring that different configurations can be applied depending on the environment.
 
-### 4. Webapp Helm Chart
+### 4. App Helm Chart
 This directory holds the Helm chart for deploying the web application to AKS.
 
 - **app-chart/**: Helm chart directory containing Kubernetes manifest templates for the web application deployment.

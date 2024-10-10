@@ -2,90 +2,80 @@ name: Deploy Web App
 
 on:
   workflow_run:
-    workflows: ["Deploy Infrastructure"]
+    workflows: ["Deploy Infrastructure"]  # Name of the infra workflow
     types:
       - completed
-  # workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   build-push-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        environment: [dev]  # Matrix for multiple environments
 
     environment:
-      name: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
-
-    permissions:
-      actions: write
-      contents: write
+      name: "${{ matrix.environment }}"
 
     env:
+      IMAGE_VERSION_APP: latest
+      KUBECONFIG: /home/runner/.kube/config
+      KUBE_CONFIG_PATH: /home/runner/.kube/config
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-      ACR_REGISTRY_NAME: $ACR_REGISTRY_NAME
-      DOCKER_IMAGE_NAME_WEBAPP: ${{ secrets.DOCKER_IMAGE_NAME_WEBAPP }}
-      IMAGE_VERSION_WEBAPP: latest
-      AKS_CLUSTER_NAME: $AKS_CLUSTER_NAME
-      AKS_RESOURCE_GROUP: $AKS_RESOURCE_GROUP
-      KUBECONFIG: /home/runner/.kube/config
-      KUBE_CONFIG_PATH: /home/runner/.kube/config
-
-      # Add TF_VAR_environment to ensure it's available
-      # TF_VAR_environment: $TF_VAR_environment
-
+      TF_VAR_environment: ${{ matrix.environment }}
+      TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+  
     steps:
+
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install kubectl
-        uses: azure/setup-kubectl@v4
+      - name: Download artifact
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v6
         with:
-          version: 'latest'
+          name: infra-outputs
+          check_artifacts: true
+          search_artifacts: false
+          workflow: deploy-infra-cicd.yml
+          path: ./artifacts
 
-      - name: Log in to Azure
-        uses: azure/login@v2
+      - name: Read JSON and Set Variables
+        run: |
+          INFRA_OUTPUTS=$(cat ./artifacts/infrastructure-outputs.json)
+          export AKS_CLUSTER_NAME=$(echo "$INFRA_OUTPUTS" | jq -r '.AKS_CLUSTER_NAME')
+          export AKS_RESOURCE_GROUP=$(echo "$INFRA_OUTPUTS" | jq -r '.AKS_RESOURCE_GROUP')
+          export ACR_REGISTRY_NAME=$(echo "$INFRA_OUTPUTS" | jq -r '.ACR_REGISTRY_NAME')
+
+          echo "AKS_CLUSTER_NAME=$AKS_CLUSTER_NAME" >> $GITHUB_ENV
+          echo "AKS_RESOURCE_GROUP=$AKS_RESOURCE_GROUP" >> $GITHUB_ENV
+          echo "ACR_REGISTRY_NAME=$ACR_REGISTRY_NAME" >> $GITHUB_ENV
+
+      - name: Set Up Kubernetes and Azure
+        uses: ./.github/actions/k8s-setup-action
         with:
-          creds:  ${{ secrets.AZURE_CREDENTIALS }}
+          aks_cluster_name: $AKS_CLUSTER_NAME
+          aks_resource_group: $AKS_RESOURCE_GROUP
+          acr_registry_name: $ACR_REGISTRY_NAME
+          azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
+          arm_client_id: $ARM_CLIENT_ID
+          arm_subscription_id: $ARM_SUBSCRIPTION_ID
 
-      - name: ACR Login
-        run: az acr login --name $ACR_REGISTRY_NAME
+      - name: Invoke Docker Build & Push Action
+        uses: ./.github/actions/docker-action
+        with:
+          image_name: ${{ vars.DOCKER_IMAGE_NAME_APP }}
+          registry_name: $ACR_REGISTRY_NAME
+          version: $IMAGE_VERSION_APP
+          working-directory: data-upload-app/src
 
-      # Fetch AKS Credentials
-      - name: Get AKS Credentials
-        run: |
-          az aks get-credentials --resource-group $AKS_RESOURCE_GROUP --name $AKS_CLUSTER_NAME --admin --overwrite-existing
-
-      - name: Print Kubernetes context and check nodes
-        run: |
-          kubectl config current-context
-          kubectl get nodes
-
-      # Build and Push Docker image to ACR
-      - name: Build & Push Docker Image
-        run: |
-          docker build -t $ACR_REGISTRY_NAME.azurecr.io/$DOCKER_IMAGE_NAME_WEBAPP:$IMAGE_VERSION_WEBAPP .
-          docker push $ACR_REGISTRY_NAME.azurecr.io/$DOCKER_IMAGE_NAME_WEBAPP:$IMAGE_VERSION_WEBAPP
-          echo "Verifying repository images in ACR..."
-          az acr repository list --name $ACR_REGISTRY_NAME --output table
-          echo $TF_VAR_environment
-          echo $TF_VAR_subscription_id
-        working-directory: data-upload-app/src
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      # Terraform Init before Helm Release
-      - name: Terraform Init (Helm)
-        run: terraform init
-        working-directory: data-upload-app/deployment
-
-      # Terraform Plan for Helm Release
-      - name: Terraform Plan (Helm release)
-        run: terraform plan -var-file="$TF_VAR_environment.tfvars" -out=app.tfplan
-        working-directory: data-upload-app/deployment
-
-      # Apply Helm Release using Terraform
-      - name: Terraform Apply (Helm release)
-        run: terraform apply -auto-approve app.tfplan
-        working-directory: data-upload-app/deployment
+      - name: Invoke Terraform Composite Action for Helm
+        uses: ./.github/actions/terraform-action
+        with:
+          environment: ${{ matrix.environment }}
+          working-directory: ./data-upload-app/deployment

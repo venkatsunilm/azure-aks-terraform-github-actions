@@ -1,0 +1,37 @@
+name: "Terraform Action"
+description: "Reusable Terraform commands for init, plan, apply "
+
+inputs:
+  environment:
+    description: "Environment for the deployment (e.g., dev, prod)"
+    required: true
+  working-directory:
+    description: "The working directory where Terraform files are located"
+    required: true
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3.1.2
+
+    - name: Terraform Init
+      run: terraform init
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+
+    - name: Run Terraform Format
+      run: terraform fmt -recursive -check
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+
+    - name: Terraform Plan
+      run: terraform plan -var-file="${{ inputs.environment }}.tfvars" -out=infra.tfplan
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve infra.tfplan
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
