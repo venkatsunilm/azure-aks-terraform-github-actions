@@ -13,8 +13,11 @@ jobs:
     permissions:
       contents: write
     strategy:
+      fail-fast: false
       matrix:
-        environment: [dev]  # Matrix for multiple environments
+        environment: ['dev', 'prod']
+        exclude:
+          - environment: ${{ github.ref != 'refs/heads/develop' && 'prod' }}
 
     environment:
       name: "${{ matrix.environment }}"
