@@ -1,4 +1,4 @@
-name: Deploy Infrastructure
+name: Deploy Infrastructure 
 
 on:
   pull_request:
@@ -10,6 +10,7 @@ on:
     branches:
       - hotfix*
       - feat_*
+    # paths: azure-platform/deployment/**
 
 jobs:
   deploy-infrastructure:
