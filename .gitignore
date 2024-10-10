@@ -118,4 +118,8 @@ terraform_apply_output
 =======
 helper/scripts/0_local_env_setup.sh
 helper/scripts/tf_backend_storage.sh
+<<<<<<< HEAD
 >>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
+=======
+helper/scripts/git_add_amend_pushf.sh
+>>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))

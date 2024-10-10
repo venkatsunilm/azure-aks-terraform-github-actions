@@ -14,6 +14,7 @@ on:
       - develop
       - main
 <<<<<<< HEAD
+<<<<<<< HEAD
   
   push:
     branches:
@@ -34,17 +35,26 @@ jobs:
     environment:
       name: "${{ matrix.environment }}"
 =======
+=======
+  
+>>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))
   push:
     branches:
-      - develop
-      - main
+      - hotfix*
       - feat_*
 
 jobs:
-  terraform:
+  deploy-infrastructure:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: ['dev', 'prod']
+        exclude:
+          - environment: ${{ github.ref != 'refs/heads/develop' && 'prod' }}
 
     environment:
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
       name: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
@@ -55,12 +65,16 @@ jobs:
 =======
       name: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
 >>>>>>> 05d12eb (Feat: continue working on the main feature and fix the pipeline to work (#34))
+=======
+      name: "${{ matrix.environment }}"
+>>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))
 
     env:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -77,6 +91,9 @@ jobs:
 =======
 
       TF_VAR_environment: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}"
+=======
+      TF_VAR_environment: ${{ matrix.environment }}
+>>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))
       TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
 >>>>>>> 05d12eb (Feat: continue working on the main feature and fix the pipeline to work (#34))
 
@@ -86,11 +103,15 @@ jobs:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))
       - name: Invoke Terraform Composite Action
         uses: ./.github/actions/terraform-action
         with:
           environment: ${{ matrix.environment }}
           working-directory: ./azure-platform/deployment
+<<<<<<< HEAD
           backend-state-name: infrastructure
     
 
@@ -138,16 +159,24 @@ jobs:
       # Capture Outputs
       - name: Capture Terraform Outputs
 >>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
+=======
+
+      - name: Capture Outputs and Save as JSON
+>>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))
         run: |
           AKS_CLUSTER_NAME=$(terraform output -raw aks_cluster_name)
           AKS_RESOURCE_GROUP=$(terraform output -raw aks_rg_name)
           ACR_REGISTRY_NAME=$(terraform output -raw acr_registry_name)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))
 
           # Create a JSON file with the outputs
           echo '{
             "AKS_CLUSTER_NAME": "'$AKS_CLUSTER_NAME'",
             "AKS_RESOURCE_GROUP": "'$AKS_RESOURCE_GROUP'",
+<<<<<<< HEAD
             "ACR_REGISTRY_NAME": "'$ACR_REGISTRY_NAME'",
             "TF_VAR_environment": "'${{ matrix.environment }}'"
           }' > ${{ github.workspace }}/infrastructure-outputs.json
@@ -269,3 +298,14 @@ jobs:
           echo "TF_VAR_subscription_id=$TF_VAR_subscription_id" >> $GITHUB_ENV
         working-directory: azure-platform/deployment
 >>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
+=======
+            "ACR_REGISTRY_NAME": "'$ACR_REGISTRY_NAME'"
+          }' > ${{ github.workspace }}/infrastructure-outputs.json
+        working-directory: azure-platform/deployment
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: infra-outputs
+          path: ${{ github.workspace }}/infrastructure-outputs.json
+>>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))
