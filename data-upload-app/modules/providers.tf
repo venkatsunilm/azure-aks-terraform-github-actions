@@ -2,8 +2,12 @@
 
 provider "helm" {
   kubernetes {
-    config_path = "/home/runner/.kube/config"
+    # TODO: How to set this dynamically
+    # config_path = "/home/runner/.kube/config"
     # config_path = "/mnt/c/Users/harit/.kube/config"
+
+    config_path = var.kubeconfig_path
+
   }
 
   alias = "aks"

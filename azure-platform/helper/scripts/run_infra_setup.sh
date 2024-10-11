@@ -1,3 +1,6 @@
+# Which environment? Default to 'dev' if not provided
+export ENV=${1:-dev}
+
 # Define common variables for logs and directories
 LOG_DIR="/mnt/c/Users/harit/Documents/devops_test_logs"
 BASE_DIR="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample"
@@ -36,14 +39,6 @@ fi
 
 # Step 1: Run the Terraform script
 export TF_DIR="$TF_INFRA_DIR"
+export DEPLOY_TYPE="infrastructure"
 run_with_logging "$HELPER_DIR/1_run_terraform.sh" \
  "$LOG_DIR/infra_terraform_output.log"
-
-# # Step 2: Set the AKS cluster configuration
-# run_with_logging "$HELPER_DIR/2_set_aks-cluster-config.sh" \
-#  "$LOG_DIR/infra_aks_config_output.log"
-
-# # Step 3: Deploy Docker image to ACR
-# export APP_PATH="$APP_PATH"
-# run_with_logging "$HELPER_DIR/3_deploy_image_acr.sh" \
-#  "$LOG_DIR/infra_docker_acr_output.log"

@@ -1,6 +1,3 @@
-# Call local_env_setup.sh to export necessary environment variables
-# source "/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/helper/scripts/0_local_env_setup.sh"
-
 # APP_PATH="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/data-upload-app/src"
 
 # Check if SUBSCRIPTION_ID is exported correctly
@@ -82,7 +79,7 @@ AKS_IDENTITY_PRINCIPAL=$(az aks show --name $AKS_CLUSTER_NAME --resource-group $
 
 # Check if AcrPull role is already assigned to the AKS managed identity
 ACR_SCOPE="/subscriptions/$ARM_SUBSCRIPTION_ID/resourceGroups/$ACR_RESOURCE_GROUP/providers/Microsoft.ContainerRegistry/registries/$ACR_NAME"
-ROLE_ASSIGNED=$(az role assignment list --assignee $AKS_IDENTITY_PRINCIPAL --scope $ACR_SCOPE --query "[?roleDefinitionName=='AcrPull']" --output tsv)
+ROLE_ASSIGNED=$(az role assignment list --assignee $ARM_CLIENT_ID --scope $ACR_SCOPE --query "[?roleDefinitionName=='AcrPull']" --output tsv)
 
 if [ -n "$ROLE_ASSIGNED" ]; then
   echo "AKS cluster $AKS_CLUSTER_NAME is already authorized to pull from ACR $ACR_NAME."

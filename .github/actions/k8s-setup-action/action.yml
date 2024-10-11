@@ -20,6 +20,9 @@ inputs:
   arm_subscription_id:
     description: "Azure subscription id"
     required: true
+  environment:
+    description: "current environment"
+    required: true
 
 runs:
   using: "composite"
@@ -43,10 +46,44 @@ runs:
         az aks get-credentials --resource-group ${{ inputs.aks_resource_group }} --name ${{ inputs.aks_cluster_name }} --admin --overwrite-existing
       shell: bash
 
+    - name: print some values
+      run: |
+        echo ${{ inputs.aks_cluster_name }} 
+        echo ${{ inputs.aks_resource_group }} 
+        echo ${{ inputs.acr_registry_name }} 
+        echo ${{ inputs.environment }} 
+        echo ${{ env.tfvars.environment }} 
+        echo ${{ env.TF_VAR_environment }} 
+        echo ${{ env.AKS_CLUSTER_NAME }} 
+        
+      shell: bash
+
+    - name: acr attachement check before
+      run: |
+        attached_acr_1=$(az aks show --name ${{ inputs.aks_cluster_name }} --resource-group ${{ inputs.aks_resource_group }} --query "identityProfile.kubeletidentity.userAssignedIdentities[*].clientId" --output tsv)
+        echo $attached_acr_1
+        if [[ "$attached_acr_1" == *"${{ inputs.acr_registry_name }}"* ]]; then
+          echo "true"
+        else
+          echo "false"
+        fi
+      shell: bash
+
     - name: Attach ACR to AKS
       run: |
-        az role assignment create --assignee ${{ inputs.arm_client_id }} --role "User Access Administrator" --scope /subscriptions/${{ inputs.arm_subscription_id }}/resourceGroups/rg-acr-dev
+        az role assignment create --assignee ${{ inputs.arm_client_id }} --role "User Access Administrator" --scope "/subscriptions/${{ inputs.arm_subscription_id }}/resourceGroups/rg-acr-${{ inputs.environment }}" 
         az aks update -n ${{ inputs.aks_cluster_name }} -g ${{ inputs.aks_resource_group }} --attach-acr ${{ inputs.acr_registry_name }}
+      shell: bash
+
+    - name: acr attachement check after
+      run: |
+        attached_acr_2=$(az aks show --name ${{ inputs.aks_cluster_name }} --resource-group ${{ inputs.aks_resource_group }} --query "identityProfile.kubeletidentity.userAssignedIdentities[*].clientId" --output tsv)
+        echo $attached_acr_2
+        if [[ "$attached_acr_2" == *"${{ inputs.acr_registry_name }}"* ]]; then
+          echo "true"
+        else
+          echo "false"
+        fi
       shell: bash
 
     - name: Print Kubernetes context and check nodes
