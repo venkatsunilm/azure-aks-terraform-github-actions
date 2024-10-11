@@ -1,6 +1,3 @@
-# Call local_env_setup.sh to export necessary environment variables
-# source "/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/helper/scripts/0_local_env_setup.sh"
-
 # APP_PATH="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/data-upload-app/src"
 
 # Check if SUBSCRIPTION_ID is exported correctly
@@ -76,21 +73,27 @@ echo "AKS Cluster: $AKS_CLUSTER_NAME"
 echo "AKS Resource Group: $AKS_RESOURCE_GROUP"
 
 # 11. Check if ACR is already attached to AKS Cluster
-echo "Checking if ACR $ACR_NAME is already attached to AKS cluster $AKS_CLUSTER_NAME..."
+# echo "Checking if ACR $ACR_NAME is already attached to AKS cluster $AKS_CLUSTER_NAME..."
 # Fetch AKS managed identity or SP object ID
-AKS_IDENTITY_PRINCIPAL=$(az aks show --name $AKS_CLUSTER_NAME --resource-group $AKS_RESOURCE_GROUP --query identity.principalId --output tsv)
+# AKS_IDENTITY_PRINCIPAL=$(az aks show --name $AKS_CLUSTER_NAME --resource-group $AKS_RESOURCE_GROUP --query identity.principalId --output tsv)
 
 # Check if AcrPull role is already assigned to the AKS managed identity
-ACR_SCOPE="/subscriptions/$ARM_SUBSCRIPTION_ID/resourceGroups/$ACR_RESOURCE_GROUP/providers/Microsoft.ContainerRegistry/registries/$ACR_NAME"
-ROLE_ASSIGNED=$(az role assignment list --assignee $AKS_IDENTITY_PRINCIPAL --scope $ACR_SCOPE --query "[?roleDefinitionName=='AcrPull']" --output tsv)
+# ACR_SCOPE="/subscriptions/$ARM_SUBSCRIPTION_ID/resourceGroups/$ACR_RESOURCE_GROUP/providers/Microsoft.ContainerRegistry/registries/$ACR_NAME"
+# ROLE_ASSIGNED=$(az role assignment list --assignee $ARM_CLIENT_ID --scope $ACR_SCOPE --query "[?roleDefinitionName=='AcrPull']" --output tsv)
 
-if [ -n "$ROLE_ASSIGNED" ]; then
-  echo "AKS cluster $AKS_CLUSTER_NAME is already authorized to pull from ACR $ACR_NAME."
-else
-  echo "Attaching ACR $ACR_NAME to AKS cluster $AKS_CLUSTER_NAME..."
-  az aks update -n $AKS_CLUSTER_NAME -g $AKS_RESOURCE_GROUP --attach-acr $ACR_NAME
-fi
+# if [ -n "$ROLE_ASSIGNED" ]; then
+#   echo "AKS cluster $AKS_CLUSTER_NAME is already authorized to pull from ACR $ACR_NAME."
+# else
 
+echo "Create an User admin role first..."
+az role assignment create \
+  --assignee $ARM_CLIENT_ID \
+  --role "User Access Administrator" \
+  --scope "/subscriptions/$ARM_SUBSCRIPTION_ID/resourceGroups/rg-acr-$TF_VAR_environment"
+
+echo "Attaching ACR $ACR_NAME to AKS cluster $AKS_CLUSTER_NAME..."
+az aks update -n $AKS_CLUSTER_NAME -g $AKS_RESOURCE_GROUP --attach-acr $ACR_NAME
+  
 # Optional: Helm deployment step if you want to run it after the AKS and ACR configuration
 # cd ../deployment
 # helm upgrade --install data-upload-app ./app-chart --values ./app-chart/dev-values.yaml

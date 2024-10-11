@@ -19,7 +19,7 @@ terraform {
     resource_group_name  = "rg-terraform-backend"
     storage_account_name = "tfstate1727630878"
     container_name       = "infrastructure-state"
-    key                  = "infrastructure.tfstate" # State file name
+    key                  = "dev.infrastructure.tfstate" # State file name
   }
 }
 
