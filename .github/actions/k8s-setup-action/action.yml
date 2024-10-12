@@ -58,32 +58,10 @@ runs:
         
       shell: bash
 
-    - name: acr attachement check before
-      run: |
-        attached_acr_1=$(az aks show --name ${{ inputs.aks_cluster_name }} --resource-group ${{ inputs.aks_resource_group }} --query "identityProfile.kubeletidentity.userAssignedIdentities[*].clientId" --output tsv)
-        echo $attached_acr_1
-        if [[ "$attached_acr_1" == *"${{ inputs.acr_registry_name }}"* ]]; then
-          echo "true"
-        else
-          echo "false"
-        fi
-      shell: bash
-
     - name: Attach ACR to AKS
       run: |
         az role assignment create --assignee ${{ inputs.arm_client_id }} --role "User Access Administrator" --scope "/subscriptions/${{ inputs.arm_subscription_id }}/resourceGroups/rg-acr-${{ inputs.environment }}" 
         az aks update -n ${{ inputs.aks_cluster_name }} -g ${{ inputs.aks_resource_group }} --attach-acr ${{ inputs.acr_registry_name }}
-      shell: bash
-
-    - name: acr attachement check after
-      run: |
-        attached_acr_2=$(az aks show --name ${{ inputs.aks_cluster_name }} --resource-group ${{ inputs.aks_resource_group }} --query "identityProfile.kubeletidentity.userAssignedIdentities[*].clientId" --output tsv)
-        echo $attached_acr_2
-        if [[ "$attached_acr_2" == *"${{ inputs.acr_registry_name }}"* ]]; then
-          echo "true"
-        else
-          echo "false"
-        fi
       shell: bash
 
     - name: Print Kubernetes context and check nodes
