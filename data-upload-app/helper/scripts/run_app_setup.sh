@@ -1,9 +1,13 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Set environment to 'dev' if not provided
 =======
 # Which environment? Default to 'dev' if not provided
 >>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
+=======
+# Set environment to 'dev' if not provided
+>>>>>>> 8ff3581 (update(helper): Automation scripts for git rebase on develop to make developement work faster (#45))
 export ENV=${1:-dev}
 
 # Define common variables for logs and directories
@@ -33,10 +37,14 @@ run_with_logging() {
 
 # Step 0: Set the local environments
 <<<<<<< HEAD
+<<<<<<< HEAD
 export ENV_DIR="$BASE_DIR"
 =======
 export ENV_DIR="$TF_APP_DIR"
 >>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
+=======
+export ENV_DIR="$BASE_DIR"
+>>>>>>> 8ff3581 (update(helper): Automation scripts for git rebase on develop to make developement work faster (#45))
 run_with_logging "$HELPER_DIR/0_local_env_setup.sh" \
  "$LOG_DIR/app_environments_output.log"
 
