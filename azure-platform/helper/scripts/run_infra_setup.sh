@@ -1,4 +1,4 @@
-# Which environment? Default to 'dev' if not provided
+# Set environment to 'dev' if not provided
 export ENV=${1:-dev}
 
 # Define common variables for logs and directories
@@ -27,7 +27,7 @@ run_with_logging() {
 }
 
 # Step 0: Set the local environments and check required environment variables
-export ENV_DIR="$TF_INFRA_DIR"
+export ENV_DIR="$BASE_DIR"
 run_with_logging "$HELPER_DIR/0_local_env_setup.sh" \
  "$LOG_DIR/infra_environments_output.log"
 
