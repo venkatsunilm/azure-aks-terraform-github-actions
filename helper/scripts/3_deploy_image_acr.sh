@@ -77,7 +77,7 @@ echo "Attaching ACR $ACR_NAME to AKS cluster $AKS_CLUSTER_NAME..."
 az role assignment create \
   --assignee $ARM_CLIENT_ID \
   --role "User Access Administrator" \
-  --scope "/subscriptions/$ARM_SUBSCRIPTION_ID>/resourceGroups/$ACR_RESOURCE_GROUP"
+  --scope "/subscriptions/$ARM_SUBSCRIPTION_ID/resourceGroups/$ACR_RESOURCE_GROUP"
 az aks update -n $AKS_CLUSTER_NAME -g $AKS_RESOURCE_GROUP --attach-acr $ACR_NAME
 
 # Optional: Helm deployment step if you want to run it after the AKS and ACR configuration
