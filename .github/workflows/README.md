@@ -1,3 +1,4 @@
+
 # CI/CD Workflows for AKS and Application Deployment
 
 This repository implements a fully automated CI/CD pipeline for deploying infrastructure and applications on Azure Kubernetes Service (AKS) using GitHub Actions, Terraform, Docker, and Helm. The pipeline consists of two main workflows:

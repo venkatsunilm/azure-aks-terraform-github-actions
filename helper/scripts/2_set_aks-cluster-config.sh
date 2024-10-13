@@ -1,6 +1,14 @@
 # Call local_env_setup.sh to export necessary environment variables
 # source "/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/helper/scripts/0_local_env_setup.sh"
 
+# Check if TF_DIR is set, if not, use the current directory
+if [ -z "$TF_DIR" ]; then
+  echo "TF_DIR is not set. Using the current directory as TF_DIR."
+  TF_DIR=$(pwd)
+else
+  echo "Using TF_DIR: $TF_DIR"
+fi
+
 cd "$TF_DIR" || { echo "Directory $TF_DIR not found"; exit 1; }
 
 # Check if AKS_CLUSTER_NAME is exported correctly

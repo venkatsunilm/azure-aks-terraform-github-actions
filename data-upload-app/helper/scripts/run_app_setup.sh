@@ -1,3 +1,6 @@
+# Which environment? Default to 'dev' if not provided
+export ENV=${1:-dev}
+
 # Define common variables for logs and directories
 LOG_DIR="/mnt/c/Users/harit/Documents/devops_test_logs"
 BASE_DIR="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample"
@@ -46,5 +49,6 @@ run_with_logging "$HELPER_DIR/3_deploy_image_acr.sh" \
 
 # Step 3: Run the Terraform script
 export TF_DIR="$TF_APP_DIR"
+export DEPLOY_TYPE="application"
 run_with_logging "$HELPER_DIR/1_run_terraform.sh" \
  "$LOG_DIR/app_terraform_output.log"

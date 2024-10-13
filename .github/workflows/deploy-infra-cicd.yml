@@ -15,11 +15,12 @@ jobs:
   deploy-infrastructure:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
+      fail-fast: true
+      max-parallel: 1
       matrix:
         environment: ['dev', 'prod']
         exclude:
-          - environment: ${{ github.ref != 'refs/heads/develop' && 'prod' }}
+          - environment: ${{ github.ref != 'refs/heads/main' && 'prod' }}
 
     environment:
       name: "${{ matrix.environment }}"
@@ -41,6 +42,8 @@ jobs:
         with:
           environment: ${{ matrix.environment }}
           working-directory: ./azure-platform/deployment
+          backend-state-name: infrastructure
+    
 
       - name: Capture Outputs and Save as JSON
         run: |
@@ -52,12 +55,13 @@ jobs:
           echo '{
             "AKS_CLUSTER_NAME": "'$AKS_CLUSTER_NAME'",
             "AKS_RESOURCE_GROUP": "'$AKS_RESOURCE_GROUP'",
-            "ACR_REGISTRY_NAME": "'$ACR_REGISTRY_NAME'"
+            "ACR_REGISTRY_NAME": "'$ACR_REGISTRY_NAME'",
+            "TF_VAR_environment": "'${{ matrix.environment }}'"
           }' > ${{ github.workspace }}/infrastructure-outputs.json
         working-directory: azure-platform/deployment
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4.4.3
         with:
-          name: infra-outputs
+          name: infra-outputs-${{ matrix.environment }}
           path: ${{ github.workspace }}/infrastructure-outputs.json
