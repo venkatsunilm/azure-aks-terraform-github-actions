@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
 # Local .terraform directories
 .terraform/
 .terraform.lock.hcl
@@ -47,6 +50,7 @@ kubectl
 .env
 helper/scripts/0_local_env_setup.sh
 helper/scripts/tf_backend_storage.sh
+<<<<<<< HEAD
 # helper/scripts/git_add_amend_pushf.sh
 =======
 # Local .terraform directories
@@ -123,3 +127,6 @@ helper/scripts/tf_backend_storage.sh
 =======
 helper/scripts/git_add_amend_pushf.sh
 >>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))
+=======
+# helper/scripts/git_add_amend_pushf.sh
+>>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))

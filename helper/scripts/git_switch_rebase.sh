@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Exit the script on any error
 set -e
 =======
@@ -78,3 +79,37 @@ git rebase develop
 >>>>>>> f27cb71 (Fix(Helper_scripts): few tweaks to correct the destroy flow (#36))
 
 echo "Rebase completed successfully!"
+=======
+#!/bin/bash
+
+# Get the current branch name
+current_branch=$(git branch --show-current)
+
+# Fetch the latest updates and prune stale remote-tracking branches
+echo "Fetching latest changes and pruning stale remote branches..."
+git fetch --prune
+
+# Check if we are already on the develop branch
+if [ "$current_branch" == "develop" ]; then
+  echo "Already on develop branch. Pulling the latest changes."
+else
+  echo "Switching to develop branch..."
+  git checkout develop
+fi
+
+# Pull the latest changes from develop
+echo "Pulling latest changes from develop..."
+git pull origin develop
+
+# Switch back to the previous branch
+if [ "$current_branch" != "develop" ]; then
+  echo "Switching back to $current_branch..."
+  git checkout "$current_branch"
+fi
+
+# Rebase the current branch onto develop
+echo "Rebasing $current_branch onto develop..."
+git rebase develop
+
+echo "Rebase completed successfully!"
+>>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))

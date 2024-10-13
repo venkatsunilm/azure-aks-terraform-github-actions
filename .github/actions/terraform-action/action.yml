@@ -9,11 +9,17 @@ inputs:
     description: "The working directory where Terraform files are located"
     required: true
 <<<<<<< HEAD
+<<<<<<< HEAD
   backend-state-name:
     description: "The deployment type name (e.g., infrastructure, application)"
     required: true
 =======
 >>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))
+=======
+  backend-state-name:
+    description: "The deployment type name (e.g., infrastructure, application)"
+    required: true
+>>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
 
 runs:
   using: "composite"
@@ -24,10 +30,14 @@ runs:
 
     - name: Terraform Init
 <<<<<<< HEAD
+<<<<<<< HEAD
       run: terraform init -backend-config="key=${{ inputs.environment }}/${{ inputs.backend-state-name }}.tfstate"
 =======
       run: terraform init
 >>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))
+=======
+      run: terraform init -backend-config="key=${{ inputs.environment }}/${{ inputs.backend-state-name }}.tfstate"
+>>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
       shell: bash
       working-directory: ${{ inputs.working-directory }}
 
@@ -38,18 +48,26 @@ runs:
 
     - name: Terraform Plan
 <<<<<<< HEAD
+<<<<<<< HEAD
       run: terraform plan -var-file="${{ inputs.environment }}.tfvars" -out=terraformplan.tfplan
 =======
       run: terraform plan -var-file="${{ inputs.environment }}.tfvars" -out=infra.tfplan
 >>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))
+=======
+      run: terraform plan -var-file="${{ inputs.environment }}.tfvars" -out=terraformplan.tfplan
+>>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
       shell: bash
       working-directory: ${{ inputs.working-directory }}
 
     - name: Terraform Apply
 <<<<<<< HEAD
+<<<<<<< HEAD
       run: terraform apply -auto-approve terraformplan.tfplan
 =======
       run: terraform apply -auto-approve infra.tfplan
 >>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))
+=======
+      run: terraform apply -auto-approve terraformplan.tfplan
+>>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
       shell: bash
       working-directory: ${{ inputs.working-directory }}

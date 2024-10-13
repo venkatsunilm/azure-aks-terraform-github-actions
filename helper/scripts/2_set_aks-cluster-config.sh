@@ -10,6 +10,7 @@ else
   echo "Using TF_DIR: $TF_DIR"
 fi
 
+<<<<<<< HEAD
 =======
 <<<<<<<< HEAD:helper/2_set_aks-cluster-config.sh
 # Call local_env_setup.sh to export necessary environment variables
@@ -63,6 +64,8 @@ echo "Done."
 # source "/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/helper/scripts/0_local_env_setup.sh"
 
 >>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
+=======
+>>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
 cd "$TF_DIR" || { echo "Directory $TF_DIR not found"; exit 1; }
 
 # Check if AKS_CLUSTER_NAME is exported correctly

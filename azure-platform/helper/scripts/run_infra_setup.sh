@@ -1,5 +1,9 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Set environment to 'dev' if not provided
+=======
+# Which environment? Default to 'dev' if not provided
+>>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
 export ENV=${1:-dev}
 
 # Define common variables for logs and directories
@@ -28,7 +32,11 @@ run_with_logging() {
 }
 
 # Step 0: Set the local environments and check required environment variables
+<<<<<<< HEAD
 export ENV_DIR="$BASE_DIR"
+=======
+export ENV_DIR="$TF_INFRA_DIR"
+>>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
 run_with_logging "$HELPER_DIR/0_local_env_setup.sh" \
  "$LOG_DIR/infra_environments_output.log"
 
@@ -42,6 +50,7 @@ fi
 export TF_DIR="$TF_INFRA_DIR"
 export DEPLOY_TYPE="infrastructure"
 run_with_logging "$HELPER_DIR/1_run_terraform.sh" \
+<<<<<<< HEAD
  "$LOG_DIR/infra_terraform_output.log"
 =======
 # Define common variables for logs and directories
@@ -94,3 +103,6 @@ run_with_logging "$HELPER_DIR/1_run_terraform.sh" \
 # run_with_logging "$HELPER_DIR/3_deploy_image_acr.sh" \
 #  "$LOG_DIR/infra_docker_acr_output.log"
 >>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
+=======
+ "$LOG_DIR/infra_terraform_output.log"
+>>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))

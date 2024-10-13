@@ -46,11 +46,16 @@ cd "$TF_DIR" || { echo "Directory $TF_DIR not found"; exit 1; }
 # Initialize Terraform
 echo "Initializing Terraform in directory: $TF_DIR"
 <<<<<<< HEAD
+<<<<<<< HEAD
 if ! terraform init  \
   -backend-config="key=$TF_VAR_environment/$DEPLOY_TYPE.tfstate"; then
 =======
 if ! terraform init; then
 >>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
+=======
+if ! terraform init  \
+  -backend-config="key=$TF_VAR_environment/$DEPLOY_TYPE.tfstate"; then
+>>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
   echo "Terraform initialization failed!"
   exit 1
 fi
@@ -62,10 +67,14 @@ fi
 # Apply with the specified environment variable and auto-approve, saving output to a file
 echo "Applying Terraform configuration for environment: $TF_VAR_environment"
 <<<<<<< HEAD
+<<<<<<< HEAD
 # if ! terraform apply -var-file="./$TF_VAR_environment.tfvars" -var="kubeconfig_path=/mnt/c/Users/harit/.kube/config" -auto-approve; then
 =======
 >>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
 if ! terraform apply -var-file="./$TF_VAR_environment.tfvars" -auto-approve; then
+=======
+if ! terraform apply -var-file="./$TF_VAR_environment.tfvars" -var="kubeconfig_path=/mnt/c/Users/harit/.kube/config" -auto-approve; then
+>>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
   echo "Terraform apply failed!"
   exit 1
 fi

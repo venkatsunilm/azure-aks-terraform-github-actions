@@ -57,8 +57,12 @@ terraform {
     resource_group_name  = "rg-terraform-backend"
     storage_account_name = "tfstate1727630878"
     container_name       = "application-state"
+<<<<<<< HEAD
     key                  = "application.tfstate"
 >>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
+=======
+    key                  = "dev.application.tfstate"
+>>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
   }
 }
 

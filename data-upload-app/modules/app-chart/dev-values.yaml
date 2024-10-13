@@ -6,10 +6,14 @@ replicas: 1
 
 image:
 <<<<<<< HEAD
+<<<<<<< HEAD
   repository: venkatsunilmdev.azurecr.io
 =======
   repository: venkatsunilm.azurecr.io
 >>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
+=======
+  repository: venkatsunilmdev.azurecr.io
+>>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
   name: data-upload-app
   tag: "latest"
   pullPolicy: IfNotPresent

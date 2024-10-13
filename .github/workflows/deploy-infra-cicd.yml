@@ -27,6 +27,7 @@ jobs:
     strategy:
       fail-fast: true
       max-parallel: 1
+<<<<<<< HEAD
       matrix:
         environment: ['dev', 'prod']
         exclude:
@@ -48,10 +49,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+=======
+>>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
       matrix:
         environment: ['dev', 'prod']
         exclude:
-          - environment: ${{ github.ref != 'refs/heads/develop' && 'prod' }}
+          - environment: ${{ github.ref != 'refs/heads/main' && 'prod' }}
 
     environment:
 <<<<<<< HEAD
@@ -112,6 +115,9 @@ jobs:
           environment: ${{ matrix.environment }}
           working-directory: ./azure-platform/deployment
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
           backend-state-name: infrastructure
     
 
@@ -176,6 +182,7 @@ jobs:
           echo '{
             "AKS_CLUSTER_NAME": "'$AKS_CLUSTER_NAME'",
             "AKS_RESOURCE_GROUP": "'$AKS_RESOURCE_GROUP'",
+<<<<<<< HEAD
 <<<<<<< HEAD
             "ACR_REGISTRY_NAME": "'$ACR_REGISTRY_NAME'",
             "TF_VAR_environment": "'${{ matrix.environment }}'"
@@ -300,12 +307,16 @@ jobs:
 >>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
 =======
             "ACR_REGISTRY_NAME": "'$ACR_REGISTRY_NAME'"
+=======
+            "ACR_REGISTRY_NAME": "'$ACR_REGISTRY_NAME'",
+            "TF_VAR_environment": "'${{ matrix.environment }}'"
+>>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
           }' > ${{ github.workspace }}/infrastructure-outputs.json
         working-directory: azure-platform/deployment
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4.4.3
         with:
-          name: infra-outputs
+          name: infra-outputs-${{ matrix.environment }}
           path: ${{ github.workspace }}/infrastructure-outputs.json
 >>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<<< HEAD:helper/3_deploy_image_acr.sh
 # Call local_env_setup.sh to export necessary environment variables
@@ -98,6 +99,8 @@ fi
 # source "/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/helper/scripts/0_local_env_setup.sh"
 
 >>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
+=======
+>>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
 # APP_PATH="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/data-upload-app/src"
 
 # Check if SUBSCRIPTION_ID is exported correctly
@@ -173,11 +176,15 @@ echo "AKS Cluster: $AKS_CLUSTER_NAME"
 echo "AKS Resource Group: $AKS_RESOURCE_GROUP"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
 echo "Attaching ACR $ACR_NAME to AKS cluster $AKS_CLUSTER_NAME..."
 # Assign the 'User Access Administrator' role at the 'rg-acr-prod' level
 az role assignment create \
   --assignee $ARM_CLIENT_ID \
   --role "User Access Administrator" \
+<<<<<<< HEAD
   --scope "/subscriptions/$ARM_SUBSCRIPTION_ID/resourceGroups/$ACR_RESOURCE_GROUP"
 az aks update -n $AKS_CLUSTER_NAME -g $AKS_RESOURCE_GROUP --attach-acr $ACR_NAME
 =======
@@ -197,6 +204,10 @@ else
   az aks update -n $AKS_CLUSTER_NAME -g $AKS_RESOURCE_GROUP --attach-acr $ACR_NAME
 fi
 >>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
+=======
+  --scope "/subscriptions/$ARM_SUBSCRIPTION_ID>/resourceGroups/$ACR_RESOURCE_GROUP"
+az aks update -n $AKS_CLUSTER_NAME -g $AKS_RESOURCE_GROUP --attach-acr $ACR_NAME
+>>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
 
 # Optional: Helm deployment step if you want to run it after the AKS and ACR configuration
 # cd ../deployment
