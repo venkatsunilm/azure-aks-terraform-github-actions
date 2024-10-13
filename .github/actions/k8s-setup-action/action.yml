@@ -46,21 +46,9 @@ runs:
         az aks get-credentials --resource-group ${{ inputs.aks_resource_group }} --name ${{ inputs.aks_cluster_name }} --admin --overwrite-existing
       shell: bash
 
-    - name: print some values
-      run: |
-        echo ${{ inputs.aks_cluster_name }} 
-        echo ${{ inputs.aks_resource_group }} 
-        echo ${{ inputs.acr_registry_name }} 
-        echo ${{ inputs.environment }} 
-        echo ${{ env.tfvars.environment }} 
-        echo ${{ env.TF_VAR_environment }} 
-        echo ${{ env.AKS_CLUSTER_NAME }} 
-        
-      shell: bash
-
     - name: Attach ACR to AKS
       run: |
-        az role assignment create --assignee ${{ inputs.arm_client_id }} --role "User Access Administrator" --scope "/subscriptions/${{ inputs.arm_subscription_id }}/resourceGroups/rg-acr-${{ inputs.environment }}" 
+        # az role assignment create --assignee ${{ inputs.arm_client_id }} --role "User Access Administrator" --scope "/subscriptions/${{ inputs.arm_subscription_id }}/resourceGroups/rg-acr-${{ inputs.environment }}" 
         az aks update -n ${{ inputs.aks_cluster_name }} -g ${{ inputs.aks_resource_group }} --attach-acr ${{ inputs.acr_registry_name }}
       shell: bash
 

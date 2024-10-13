@@ -20,7 +20,7 @@ jobs:
       matrix:
         environment: ['dev', 'prod']
         exclude:
-          - environment: ${{ github.ref != 'refs/heads/feat_cicd_new_design' && 'prod' }}
+          - environment: ${{ github.ref != 'refs/heads/main' && 'prod' }}
 
     environment:
       name: "${{ matrix.environment }}"

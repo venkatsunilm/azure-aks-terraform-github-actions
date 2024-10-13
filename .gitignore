@@ -46,4 +46,4 @@ kubectl
 .env
 helper/scripts/0_local_env_setup.sh
 helper/scripts/tf_backend_storage.sh
-helper/scripts/git_add_amend_pushf.sh
+# helper/scripts/git_add_amend_pushf.sh
