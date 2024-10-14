@@ -8,3 +8,13 @@ variable "kubeconfig_path" {
   type        = string
   default     = "/home/runner/.kube/config" # Default value
 }
+
+variable "aks_cluster_name" {
+  description = "The name of the AKS cluster"
+  type        = string
+}
+
+variable "aks_resource_group" {
+  description = "The name of the AKS resource group"
+  type        = string
+}
