@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 6d3e536 (Feat(helm_aks): Switch to Standard_B2s VM for Development and Integrate Helm with AKS )
 name: "Kubernetes Setup Action"
 description: "Reusable action for setting up Kubernetes with AKS"
 
@@ -60,6 +63,7 @@ runs:
         az aks update -n ${{ inputs.aks_cluster_name }} -g ${{ inputs.aks_resource_group }} --attach-acr ${{ inputs.acr_registry_name }}
       shell: bash
 
+<<<<<<< HEAD
 =======
 name: "Kubernetes Setup Action"
 description: "Reusable action for setting up Kubernetes with AKS"
@@ -122,3 +126,5 @@ runs:
         kubectl get services
       shell: bash
 >>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))
+=======
+>>>>>>> 6d3e536 (Feat(helm_aks): Switch to Standard_B2s VM for Development and Integrate Helm with AKS )

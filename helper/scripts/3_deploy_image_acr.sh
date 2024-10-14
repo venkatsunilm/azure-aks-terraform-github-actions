@@ -185,6 +185,7 @@ az role assignment create \
   --assignee $ARM_CLIENT_ID \
   --role "User Access Administrator" \
 <<<<<<< HEAD
+<<<<<<< HEAD
   --scope "/subscriptions/$ARM_SUBSCRIPTION_ID/resourceGroups/$ACR_RESOURCE_GROUP"
 az aks update -n $AKS_CLUSTER_NAME -g $AKS_RESOURCE_GROUP --attach-acr $ACR_NAME
 =======
@@ -206,6 +207,9 @@ fi
 >>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
 =======
   --scope "/subscriptions/$ARM_SUBSCRIPTION_ID>/resourceGroups/$ACR_RESOURCE_GROUP"
+=======
+  --scope "/subscriptions/$ARM_SUBSCRIPTION_ID/resourceGroups/$ACR_RESOURCE_GROUP"
+>>>>>>> 6d3e536 (Feat(helm_aks): Switch to Standard_B2s VM for Development and Integrate Helm with AKS )
 az aks update -n $AKS_CLUSTER_NAME -g $AKS_RESOURCE_GROUP --attach-acr $ACR_NAME
 >>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
 

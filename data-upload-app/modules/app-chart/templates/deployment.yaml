@@ -26,6 +26,7 @@ spec:
           requests:
             cpu: 1m
 <<<<<<< HEAD
+<<<<<<< HEAD
             memory: 50Mi
           limits:
             cpu: 250m
@@ -36,3 +37,9 @@ spec:
             cpu: 1000m
             memory: 512Mi
 >>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
+=======
+            memory: 50Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+>>>>>>> 6d3e536 (Feat(helm_aks): Switch to Standard_B2s VM for Development and Integrate Helm with AKS )

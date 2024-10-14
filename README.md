@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 6d3e536 (Feat(helm_aks): Switch to Standard_B2s VM for Development and Integrate Helm with AKS )
 # azure-aks-terraform-github-actions-helm
 
 ## Overview
@@ -87,6 +90,7 @@ The project includes two CI/CD pipelines:
 - **Development**: Use `dev.tfvars` and `dev-values.yaml` for dev environment deployment.
 - **Production**: Use `prod.tfvars` and `prod-values.yaml` for prod environment deployment.
 
+<<<<<<< HEAD
 ## Project sturcture and it's design
 
 The idea of this structure is to support a clear separation between infrastructure provisioning and application deployment using Terraform, Helm, Docker, and AKS. The GitHub Actions workflows automate both infrastructure and application deployments, with the reusable actions (such as k8s-setup-action) simplifying Kubernetes management tasks.
@@ -291,3 +295,7 @@ The project includes two CI/CD pipelines:
 ## License
 This project is licensed under the MIT License.
 >>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
+=======
+## License
+This project is licensed under the MIT License.
+>>>>>>> 6d3e536 (Feat(helm_aks): Switch to Standard_B2s VM for Development and Integrate Helm with AKS )

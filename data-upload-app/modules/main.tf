@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 6d3e536 (Feat(helm_aks): Switch to Standard_B2s VM for Development and Integrate Helm with AKS )
 # https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release
 
 // Retrieve AKS cluster information
@@ -17,6 +20,7 @@ resource "helm_release" "data-upload-app" {
 
   provider = helm.aks
 }
+<<<<<<< HEAD
 =======
 # https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release
 
@@ -30,3 +34,5 @@ resource "helm_release" "data-upload-app" {
 
 }
 >>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
+=======
+>>>>>>> 6d3e536 (Feat(helm_aks): Switch to Standard_B2s VM for Development and Integrate Helm with AKS )

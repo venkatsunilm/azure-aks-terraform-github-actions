@@ -68,6 +68,7 @@ fi
 echo "Applying Terraform configuration for environment: $TF_VAR_environment"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 # if ! terraform apply -var-file="./$TF_VAR_environment.tfvars" -var="kubeconfig_path=/mnt/c/Users/harit/.kube/config" -auto-approve; then
 =======
 >>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
@@ -75,6 +76,10 @@ if ! terraform apply -var-file="./$TF_VAR_environment.tfvars" -auto-approve; the
 =======
 if ! terraform apply -var-file="./$TF_VAR_environment.tfvars" -var="kubeconfig_path=/mnt/c/Users/harit/.kube/config" -auto-approve; then
 >>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
+=======
+# if ! terraform apply -var-file="./$TF_VAR_environment.tfvars" -var="kubeconfig_path=/mnt/c/Users/harit/.kube/config" -auto-approve; then
+if ! terraform apply -var-file="./$TF_VAR_environment.tfvars" -auto-approve; then
+>>>>>>> 6d3e536 (Feat(helm_aks): Switch to Standard_B2s VM for Development and Integrate Helm with AKS )
   echo "Terraform apply failed!"
   exit 1
 fi
