@@ -12,7 +12,7 @@ locals {
   subnet_name = "subnet-${var.environment}"
 
   # storage
-  storage_account_name = "sa${var.environment}${random_string.storage_suffix.result}"
+  # storage_account_name = "sa${var.environment}${random_string.storage_suffix.result}"
 
   # ACR
   registry_name           = "venkatsunilm${var.environment}"
