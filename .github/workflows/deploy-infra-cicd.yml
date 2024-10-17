@@ -31,7 +31,7 @@ jobs:
       matrix:
         environment: ['dev', 'prod']
         exclude:
-          - environment: ${{ github.base_ref != 'refs/heads/develop' && 'prod' }}
+          - environment: ${{ github.base_ref != 'main' && 'prod' }}
 
     environment:
       name: "${{ matrix.environment }}"
@@ -103,12 +103,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))
+=======
+      
+>>>>>>> 0949644 (fix(cicd): run Dev & Prod pipelines on PR to main (#52))
       - name: Invoke Terraform Composite Action
         uses: ./.github/actions/terraform-action
         with:
