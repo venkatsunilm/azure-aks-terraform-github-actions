@@ -41,17 +41,17 @@ module "networking" {
 }
 
 # Generate a random suffix for the storage account name
-resource "random_string" "storage_suffix" {
-  length  = 6
-  special = false
-  upper   = false
-}
+# resource "random_string" "storage_suffix" {
+#   length  = 6
+#   special = false
+#   upper   = false
+# }
 
-module "storage" {
-  source               = "../modules/storage"
-  storage_account_name = local.storage_account_name
-  resource_group_name  = azurerm_resource_group.rg.name
-  environment          = local.environment
-  location             = azurerm_resource_group.rg.location
-  subscription_id      = var.subscription_id
-}
+# module "storage" {
+#   source               = "../modules/storage"
+#   storage_account_name = local.storage_account_name
+#   resource_group_name  = azurerm_resource_group.rg.name
+#   environment          = local.environment
+#   location             = azurerm_resource_group.rg.location
+#   subscription_id      = var.subscription_id
+# }

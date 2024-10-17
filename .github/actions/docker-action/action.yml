@@ -18,10 +18,24 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Build Docker image
+
+    # Cache pip dependencies using actions/cache
+    - name: Cache pip dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Build Docker image with multi-stage and cache optimization
       run: |
-        echo "Image name: ${{ inputs.image_name }}"
-        docker build -t ${{ inputs.registry_name }}.azurecr.io/${{ inputs.image_name }}:${{ inputs.version }} .
+        echo "Building Docker image: ${{ inputs.image_name }}"
+        docker build \
+          --target final \
+          --cache-from ${{ inputs.registry_name }}.azurecr.io/${{ inputs.image_name }}:${{ inputs.version }} \
+          --tag ${{ inputs.registry_name }}.azurecr.io/${{ inputs.image_name }}:${{ inputs.version }} \
+          .
       shell: bash
       working-directory: ${{ inputs.working-directory }}
 
