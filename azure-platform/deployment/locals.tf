@@ -13,6 +13,9 @@ locals {
 
   # storage
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 693547f (Feat(Docker): Implement Multi-Stage Docker Build with Cache Optimization and Dependency Management)
   # storage_account_name = "sa${var.environment}${random_string.storage_suffix.result}"
 
   # ACR

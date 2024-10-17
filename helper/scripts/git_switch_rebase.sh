@@ -1,16 +1,24 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Exit the script on any error
 set -e
 =======
 #!/bin/bash
 >>>>>>> f27cb71 (Fix(Helper_scripts): few tweaks to correct the destroy flow (#36))
+=======
+# Exit the script on any error
+set -e
+>>>>>>> 693547f (Feat(Docker): Implement Multi-Stage Docker Build with Cache Optimization and Dependency Management)
 
 # Get the current branch name
 current_branch=$(git branch --show-current)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 693547f (Feat(Docker): Implement Multi-Stage Docker Build with Cache Optimization and Dependency Management)
 # Check for uncommitted changes
 if [[ -n $(git status --porcelain) ]]; then
   echo "Uncommitted changes detected. Stashing changes before switching branches..."
@@ -41,6 +49,7 @@ fi
 if [ "$current_branch" != "develop" ]; then
   echo "Switching back to $current_branch..."
   git checkout "$current_branch" || { echo "Failed to switch back to $current_branch"; exit 1; }
+<<<<<<< HEAD
 =======
 # Fetch the latest updates and prune stale remote-tracking branches
 echo "Fetching latest changes and pruning stale remote branches..."
@@ -63,11 +72,16 @@ if [ "$current_branch" != "develop" ]; then
   echo "Switching back to $current_branch..."
   git checkout "$current_branch"
 >>>>>>> f27cb71 (Fix(Helper_scripts): few tweaks to correct the destroy flow (#36))
+=======
+>>>>>>> 693547f (Feat(Docker): Implement Multi-Stage Docker Build with Cache Optimization and Dependency Management)
 fi
 
 # Rebase the current branch onto develop
 echo "Rebasing $current_branch onto develop..."
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 693547f (Feat(Docker): Implement Multi-Stage Docker Build with Cache Optimization and Dependency Management)
 git rebase develop || { echo "Rebase failed"; exit 1; }
 
 # Apply the stash if changes were stashed earlier
@@ -75,6 +89,7 @@ if [ "$stash_applied" = true ]; then
   echo "Re-applying stashed changes..."
   git stash pop || { echo "Failed to reapply stashed changes"; exit 1; }
 fi
+<<<<<<< HEAD
 =======
 git rebase develop
 >>>>>>> f27cb71 (Fix(Helper_scripts): few tweaks to correct the destroy flow (#36))
@@ -134,3 +149,7 @@ fi
 
 echo "Rebase completed successfully!"
 >>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
+=======
+
+echo "Rebase completed successfully!"
+>>>>>>> 693547f (Feat(Docker): Implement Multi-Stage Docker Build with Cache Optimization and Dependency Management)

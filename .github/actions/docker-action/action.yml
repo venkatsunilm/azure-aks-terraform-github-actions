@@ -19,6 +19,9 @@ runs:
   using: "composite"
   steps:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 693547f (Feat(Docker): Implement Multi-Stage Docker Build with Cache Optimization and Dependency Management)
 
     # Cache pip dependencies using actions/cache
     - name: Cache pip dependencies
@@ -30,6 +33,7 @@ runs:
           ${{ runner.os }}-pip-
 
     - name: Build Docker image with multi-stage and cache optimization
+<<<<<<< HEAD
       run: |
         echo "Building Docker image: ${{ inputs.image_name }}"
         docker build \
@@ -43,6 +47,15 @@ runs:
         echo "Image name: ${{ inputs.image_name }}"
         docker build -t ${{ inputs.registry_name }}.azurecr.io/${{ inputs.image_name }}:${{ inputs.version }} .
 >>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))
+=======
+      run: |
+        echo "Building Docker image: ${{ inputs.image_name }}"
+        docker build \
+          --target final \
+          --cache-from ${{ inputs.registry_name }}.azurecr.io/${{ inputs.image_name }}:${{ inputs.version }} \
+          --tag ${{ inputs.registry_name }}.azurecr.io/${{ inputs.image_name }}:${{ inputs.version }} \
+          .
+>>>>>>> 693547f (Feat(Docker): Implement Multi-Stage Docker Build with Cache Optimization and Dependency Management)
       shell: bash
       working-directory: ${{ inputs.working-directory }}
 

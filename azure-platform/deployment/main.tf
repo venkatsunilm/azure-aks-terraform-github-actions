@@ -56,11 +56,15 @@ module "networking" {
 
 # Generate a random suffix for the storage account name
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 693547f (Feat(Docker): Implement Multi-Stage Docker Build with Cache Optimization and Dependency Management)
 # resource "random_string" "storage_suffix" {
 #   length  = 6
 #   special = false
 #   upper   = false
 # }
+<<<<<<< HEAD
 
 # module "storage" {
 #   source               = "../modules/storage"
@@ -95,3 +99,14 @@ module "app" {
 >>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
 =======
 >>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
+=======
+
+# module "storage" {
+#   source               = "../modules/storage"
+#   storage_account_name = local.storage_account_name
+#   resource_group_name  = azurerm_resource_group.rg.name
+#   environment          = local.environment
+#   location             = azurerm_resource_group.rg.location
+#   subscription_id      = var.subscription_id
+# }
+>>>>>>> 693547f (Feat(Docker): Implement Multi-Stage Docker Build with Cache Optimization and Dependency Management)
