@@ -86,5 +86,115 @@ The project includes two CI/CD pipelines:
 - **Development**: Use `dev.tfvars` and `dev-values.yaml` for dev environment deployment.
 - **Production**: Use `prod.tfvars` and `prod-values.yaml` for prod environment deployment.
 
+## Project sturcture and it's design
+
+The idea of this structure is to support a clear separation between infrastructure provisioning and application deployment using Terraform, Helm, Docker, and AKS. The GitHub Actions workflows automate both infrastructure and application deployments, with the reusable actions (such as k8s-setup-action) simplifying Kubernetes management tasks.
+
+### Project Structure Overview
+
+DEVOPS-TERRAFORM-SAMPLE/
+│
+├── .github/
+│   └── actions/
+│       ├── terraform-action/
+│       ├── docker-action/
+│       └── k8s-setup-action/
+│   └── workflows/
+│       ├── deploy-infra-cicd.yml
+│       └── deploy-app-cicd.yml
+│
+├── azure-platform/
+│   ├── deployment/
+│   └── modules/
+├── data-upload-app/
+│   ├── deployment/
+│   └── modules/
+├── helper/
+│   └── scripts/
+├── .gitignore
+└── README.md
+
+### A deep look at the Project sturcture and it's design
+azure-aks-terraform-github-actions/
+│
+├── .github/
+│   └── actions/
+│       ├── terraform-action/         # Composite action to run Terraform commands
+│       ├── docker-action/            # Composite action to build and push Docker images
+│       └── k8s-setup-action/         # Composite action to set up Kubernetes (AKS)
+│   └── workflows/
+│       ├── deploy-infra-cicd.yml     # GitHub Actions workflow for infrastructure deployment
+│       └── deploy-app-cicd.yml       # GitHub Actions workflow for application deployment
+│
+├── azure-platform/
+│   ├── deployment/
+│   │   ├── .terraform/               # Terraform-related files and configurations
+│   │   ├── data.tf                   # Data source definitions
+│   │   ├── dev.tfvars                # Environment-specific variables for dev
+│   │   ├── locals.tf                 # Local variables used in Terraform
+│   │   ├── main.tf                   # Main infrastructure configuration (AKS, Networking, etc.)
+│   │   ├── outputs.tf                # Output values from Terraform (e.g., AKS name, resource group)
+│   │   ├── prod.tfvars               # Environment-specific variables for prod
+│   │   ├── providers.tf              # Provider configuration for Azure (azurerm)
+│   │   ├── versions.tf               # Terraform version and provider version constraints
+│   └── modules/
+│       ├── acr/
+│       │   ├── locals.tf             # Local variables for ACR
+│       │   ├── main.tf               # ACR module configuration
+│       │   ├── outputs.tf            # Outputs related to ACR
+│       │   ├── variables.tf          # Variables for ACR module
+│       ├── aks/
+│       │   ├── locals.tf             # Local variables for AKS
+│       │   ├── main.tf               # AKS module configuration
+│       │   ├── outputs.tf            # Outputs related to AKS
+│       │   ├── variables.tf          # Variables for AKS module
+│       ├── networking/
+│       │   ├── locals.tf             # Local variables for Networking
+│       │   ├── main.tf               # Networking configuration (VNet, subnets, etc.)
+│       │   ├── outputs.tf            # Outputs related to Networking
+│       │   └── variables.tf          # Variables for Networking
+│       └── storage/
+│           ├── locals.tf             # Local variables for Storage
+│           ├── main.tf               # Azure Blob Storage and Terraform backend configuration
+│           └── variables.tf          # Variables for Storage
+│
+├── data-upload-app/
+│   ├── deployment/
+│   │   ├── .terraform/               # Terraform files for the application deployment
+│   │   ├── dev.tfvars                # Environment-specific variables for dev
+│   │   ├── main.tf                   # Helm chart deployment using Terraform
+│   │   ├── outputs.tf                # Outputs related to app deployment
+│   │   ├── prod.tfvars               # Environment-specific variables for prod
+│   │   ├── providers.tf              # Providers for the app deployment
+│   │   ├── variables.tf              # Variables for the app deployment
+│   └── modules/
+│       ├── app-chart/
+│       │   ├── templates/            # Helm chart templates (deployment, service, ingress, etc.)
+│       │   ├── Chart.yaml            # Helm chart configuration
+│       │   ├── dev-values.yaml       # Helm values for dev environment
+│       │   ├── prod-values.yaml      # Helm values for prod environment
+│       └── src/
+│           ├── Dockerfile            # Dockerfile for building the web application image
+│           ├── app.py                # Main application code (Python, Flask or similar)
+│           ├── requirements.txt      # Python dependencies
+│
+├── helper/
+│   └── scripts/
+│       ├── 0_local_env_setup.sh      # Script for setting up local development environment (git ignored)
+│       ├── 1_run_terraform.sh        # Script to run Terraform commands
+│       ├── 2_set_aks-cluster-config.sh # Script to configure AKS cluster
+│       ├── 3_deploy_image_acr.sh     # Script to deploy Docker images to ACR
+│       ├── 4_run_terraform_destroy.sh # Script to destroy infrastructure via Terraform
+│       ├── check_acr_attach_aks.sh   # Script to check ACR attachment with AKS
+│       ├── delete_all_rg_except.sh   # Script to delete all resource groups except specific ones
+│       ├── git_add_amend_pushf.sh    # Script for Git add, amend, and push
+│       ├── git_switch_rebase.sh      # Script to switch branches and rebase in Git
+│       ├── tf_backend_storage.sh     # Script to set up backend storage for Terraform state (git ignored)
+│
+├── .gitignore                        # Git ignore file for Terraform and other generated files
+└── README.md                         # Project overview and documentation
+
 ## License
 This project is licensed under the MIT License.
+
+DEVOPS-TERRAFORM-SAMPLE/ │ ├── .github/ # GitHub Actions workflows and custom actions │ └── actions/ │ └── workflows/ │ ├── azure-platform/ # Terraform files for infrastructure provisioning │ ├── deployment/ │ └── modules/ │ ├── data-upload-app/ # Application source code, Helm charts, and Terraform for app deployment │ ├── deployment/ │ └── modules/ │ ├── helper/ # Helper scripts for managing infrastructure and app deployment └── README.md #
