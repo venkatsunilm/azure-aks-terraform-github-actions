@@ -54,7 +54,7 @@ jobs:
       matrix:
         environment: ['dev', 'prod']
         exclude:
-          - environment: ${{ github.ref != 'refs/heads/main' && 'prod' }}
+          - environment: ${{ github.base_ref != 'refs/heads/develop' && 'prod' }}
 
     environment:
 <<<<<<< HEAD

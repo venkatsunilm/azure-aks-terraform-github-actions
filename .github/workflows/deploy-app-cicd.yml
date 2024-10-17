@@ -180,8 +180,12 @@ jobs:
       matrix:
         environment: ['dev', 'prod']
         exclude:
+<<<<<<< HEAD
           - environment: ${{ github.ref != 'refs/heads/main' && 'prod' }}
 >>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
+=======
+          - environment: ${{ github.ref != 'refs/heads/develop' && 'prod' }}
+>>>>>>> 5e514ae (Fix(cicd): run Dev & Prod pipelines on PR to main (#50))
 
     environment:
       name: ${{ matrix.environment }}
