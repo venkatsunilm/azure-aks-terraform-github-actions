@@ -44,11 +44,11 @@ run_with_logging "$HELPER_DIR/2_set_aks-cluster-config.sh" \
 
 # Step 2: Deploy Docker image to ACR
 export APP_PATH="$APP_DOCKER_PATH"
-# run_with_logging "$HELPER_DIR/3_deploy_image_acr.sh" \
-#  "$LOG_DIR/app_docker_acr_output.log"
+run_with_logging "$HELPER_DIR/3_deploy_image_acr.sh" \
+ "$LOG_DIR/app_docker_acr_output.log"
 
-# # Step 3: Run the Terraform script
-# export TF_DIR="$TF_APP_DIR"
-# export DEPLOY_TYPE="application"
-# run_with_logging "$HELPER_DIR/1_run_terraform.sh" \
-#  "$LOG_DIR/app_terraform_output.log"
+# Step 3: Run the Terraform script
+export TF_DIR="$TF_APP_DIR"
+export DEPLOY_TYPE="application"
+run_with_logging "$HELPER_DIR/1_run_terraform.sh" \
+ "$LOG_DIR/app_terraform_output.log"

@@ -20,7 +20,7 @@ jobs:
       matrix:
         environment: ['dev', 'prod']
         exclude:
-          - environment: ${{ github.base_ref != 'refs/heads/develop' && 'prod' }}
+          - environment: ${{ github.base_ref != 'main' && 'prod' }}
 
     environment:
       name: "${{ matrix.environment }}"
@@ -36,7 +36,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
+      
       - name: Invoke Terraform Composite Action
         uses: ./.github/actions/terraform-action
         with:
