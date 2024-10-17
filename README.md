@@ -91,6 +91,9 @@ The project includes two CI/CD pipelines:
 - **Production**: Use `prod.tfvars` and `prod-values.yaml` for prod environment deployment.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> c2f2c5d (doc(README):  Project sturcture and it's design (#48))
 ## Project sturcture and it's design
 
 The idea of this structure is to support a clear separation between infrastructure provisioning and application deployment using Terraform, Helm, Docker, and AKS. The GitHub Actions workflows automate both infrastructure and application deployments, with the reusable actions (such as k8s-setup-action) simplifying Kubernetes management tasks.
@@ -202,6 +205,7 @@ azure-aks-terraform-github-actions/
 ## License
 This project is licensed under the MIT License.
 
+<<<<<<< HEAD
 DEVOPS-TERRAFORM-SAMPLE/ │ ├── .github/ # GitHub Actions workflows and custom actions │ └── actions/ │ └── workflows/ │ ├── azure-platform/ # Terraform files for infrastructure provisioning │ ├── deployment/ │ └── modules/ │ ├── data-upload-app/ # Application source code, Helm charts, and Terraform for app deployment │ ├── deployment/ │ └── modules/ │ ├── helper/ # Helper scripts for managing infrastructure and app deployment └── README.md #
 =======
 # azure-aks-terraform-github-actions-helm
@@ -299,3 +303,6 @@ This project is licensed under the MIT License.
 ## License
 This project is licensed under the MIT License.
 >>>>>>> 6d3e536 (Feat(helm_aks): Switch to Standard_B2s VM for Development and Integrate Helm with AKS )
+=======
+DEVOPS-TERRAFORM-SAMPLE/ │ ├── .github/ # GitHub Actions workflows and custom actions │ └── actions/ │ └── workflows/ │ ├── azure-platform/ # Terraform files for infrastructure provisioning │ ├── deployment/ │ └── modules/ │ ├── data-upload-app/ # Application source code, Helm charts, and Terraform for app deployment │ ├── deployment/ │ └── modules/ │ ├── helper/ # Helper scripts for managing infrastructure and app deployment └── README.md #
+>>>>>>> c2f2c5d (doc(README):  Project sturcture and it's design (#48))
