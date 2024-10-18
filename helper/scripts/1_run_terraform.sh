@@ -1,9 +1,11 @@
 # Directory to run Terraform commands
-# TF_DIR="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/azure-platform/deployment"
-# TF_DIR="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/data-upload-app/deployment"
+TF_INFRA_DIR="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/azure-platform/deployment"
+TF_APP_DIR="/mnt/c/Users/harit/Documents/Visual Studio 2022/DevOps/DevOps-Terraform-Sample/data-upload-app/deployment"
 
 # Set the environment variable to dev
 # export TF_VAR_environment="dev"
+
+TF_DIR="${TF_DIR:-$TF_INFRA_DIR}"
 
 # Change to the directory where Terraform files are located
 cd "$TF_DIR" || { echo "Directory $TF_DIR not found"; exit 1; }

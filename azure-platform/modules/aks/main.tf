@@ -12,6 +12,13 @@ resource "azurerm_kubernetes_cluster" "aks" {
     # os_disk_size_gb = 30
   }
 
+  lifecycle {
+    prevent_destroy = false
+    ignore_changes = [
+      upgrade_settings
+    ]
+  }
+
   identity {
     type = local.type
   }
@@ -19,6 +26,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   tags = {
     environment = var.environment
   }
+
 
 }
 
