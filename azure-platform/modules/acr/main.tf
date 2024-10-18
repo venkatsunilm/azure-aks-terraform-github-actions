@@ -5,19 +5,10 @@ resource "azurerm_container_registry" "acr" {
   location            = var.location
   sku                 = local.sku
   # admin_enabled       = true # Optional: Enable admin access for pushing images
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
 
   tags = {
     environment = var.environment
   }
 
-<<<<<<< HEAD
-=======
->>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
-=======
->>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
 }
 

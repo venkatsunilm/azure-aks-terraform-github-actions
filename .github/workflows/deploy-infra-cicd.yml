@@ -1,20 +1,10 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 name: Deploy Infrastructure
-=======
-name: Terraform & Web App CI/CD Workflow
->>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
-=======
-name: Deploy Infrastructure
->>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
 
 on:
   pull_request:
     branches:
       - develop
       - main
-<<<<<<< HEAD
-<<<<<<< HEAD
   
   push:
     branches:
@@ -27,7 +17,6 @@ jobs:
     strategy:
       fail-fast: true
       max-parallel: 1
-<<<<<<< HEAD
       matrix:
         environment: ['dev', 'prod']
         exclude:
@@ -35,159 +24,37 @@ jobs:
 
     environment:
       name: "${{ matrix.environment }}"
-=======
-=======
-  
->>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))
-  push:
-    branches:
-      - hotfix*
-      - feat_*
-
-jobs:
-  deploy-infrastructure:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-=======
->>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
-      matrix:
-        environment: ['dev', 'prod']
-        exclude:
-          - environment: ${{ github.base_ref != 'refs/heads/develop' && 'prod' }}
-
-    environment:
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-      name: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
->>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
-=======
-      name: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}"
->>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
-=======
-      name: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
->>>>>>> 05d12eb (Feat: continue working on the main feature and fix the pipeline to work (#34))
-=======
-      name: "${{ matrix.environment }}"
->>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))
 
     env:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
       TF_VAR_environment: ${{ matrix.environment }}
       TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-=======
-
-      TF_VAR_environment: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
->>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
-=======
-      TF_VAR_environment: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
-      TF_VAR_subscription_id: $ARM_SUBSCRIPTION_ID
->>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
-=======
-
-      TF_VAR_environment: "${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}"
-=======
-      TF_VAR_environment: ${{ matrix.environment }}
->>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))
-      TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
->>>>>>> 05d12eb (Feat: continue working on the main feature and fix the pipeline to work (#34))
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-<<<<<<< HEAD
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))
-=======
       
->>>>>>> 0949644 (fix(cicd): run Dev & Prod pipelines on PR to main (#52))
       - name: Invoke Terraform Composite Action
         uses: ./.github/actions/terraform-action
         with:
           environment: ${{ matrix.environment }}
           working-directory: ./azure-platform/deployment
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
           backend-state-name: infrastructure
     
 
       - name: Capture Outputs and Save as JSON
-=======
-      - name: Create tfvars file from secrets & Print encrypted content
-        run: |
-          cat <<EOF > deployment/$TF_VAR_environment.tfvars
-          ${{ secrets.TFVARS }}
-          EOF
-          cat deployment/$TF_VAR_environment.tfvars
-=======
-      # - name: Create tfvars file from secrets & Print encrypted content
-      #   run: |
-      #     cat <<EOF > deployment/$TF_VAR_environment.tfvars
-      #     ${{ secrets.TFVARS }}
-      #     EOF
-      #     cat deployment/$TF_VAR_environment.tfvars
->>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      # Terraform Init (for Infrastructure)
-      - name: Terraform Init (Infrastructure)
-        run: |
-          echo $TF_VAR_subscription_id  
-          terraform init
-        working-directory: azure-platform/deployment
-
-      # Terraform Plan (for Infrastructure)
-      - name: Terraform Plan (Infrastructure)
-        run: terraform plan -var-file="$TF_VAR_environment.tfvars" -out=infra.tfplan
-        working-directory: azure-platform/deployment
-
-      # Terraform Apply (for Infrastructure)
-      - name: Terraform Apply (Infrastructure)
-        run: terraform apply -auto-approve infra.tfplan
-        working-directory: azure-platform/deployment
-
-<<<<<<< HEAD
-      - name: Get Terraform Outputs
->>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
-=======
-      # Capture Outputs
-      - name: Capture Terraform Outputs
->>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
-=======
-
-      - name: Capture Outputs and Save as JSON
->>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))
         run: |
           AKS_CLUSTER_NAME=$(terraform output -raw aks_cluster_name)
           AKS_RESOURCE_GROUP=$(terraform output -raw aks_rg_name)
           ACR_REGISTRY_NAME=$(terraform output -raw acr_registry_name)
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))
 
           # Create a JSON file with the outputs
           echo '{
             "AKS_CLUSTER_NAME": "'$AKS_CLUSTER_NAME'",
             "AKS_RESOURCE_GROUP": "'$AKS_RESOURCE_GROUP'",
-<<<<<<< HEAD
-<<<<<<< HEAD
             "ACR_REGISTRY_NAME": "'$ACR_REGISTRY_NAME'",
             "TF_VAR_environment": "'${{ matrix.environment }}'"
           }' > ${{ github.workspace }}/infrastructure-outputs.json
@@ -198,129 +65,3 @@ jobs:
         with:
           name: infra-outputs-${{ matrix.environment }}
           path: ${{ github.workspace }}/infrastructure-outputs.json
-=======
-          echo "AKS_CLUSTER_NAME=$AKS_CLUSTER_NAME" >> $GITHUB_ENV
-          echo "AKS_RESOURCE_GROUP=$AKS_RESOURCE_GROUP" >> $GITHUB_ENV
-          echo "ACR_REGISTRY_NAME=$ACR_REGISTRY_NAME" >> $GITHUB_ENV
-<<<<<<< HEAD
-        working-directory: deployment/shared
-
-  build-push-deploy:
-    needs: terraform
-    runs-on: ubuntu-latest
-
-    environment:
-      name: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
-
-    env:
-      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-
-      ACR_REGISTRY_NAME: ${{ secrets.ACR_REGISTRY_NAME }}
-      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-      DOCKER_IMAGE_NAME_WEBAPP: ${{ vars.DOCKER_IMAGE_NAME_WEBAPP }}
-      TF_VAR_environment: "${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
-
-      IMAGE_VERSION_WEBAPP: latest
-      AKS_RESOURCE_GROUP: rg-development
-      AKS_CLUSTER_NAME: aks-development
-
-      KUBECONFIG: /home/runner/.kube/config
-      KUBE_CONFIG_PATH: /home/runner/.kube/config
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install kubectl
-        uses: azure/setup-kubectl@v4
-        with:
-          version: 'latest'  # You can specify a version if needed, e.g., 'v1.22.0'
-
-      - name: Log in to Azure
-        uses: azure/login@v2
-        with:
-          creds:  ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: ACR Login
-        run: |
-          az acr login --name $ACR_REGISTRY_NAME
-
-      # Fetch AKS Credentials AFTER Terraform Apply
-      - name: Get AKS Credentials
-        run: |
-          az aks get-credentials --resource-group $AKS_RESOURCE_GROUP --name $AKS_CLUSTER_NAME --admin --overwrite-existing
-
-      # Print the current context to verify it's set correctly
-      - name: Kubernetes get contexts, set context and get current-context
-        run: |
-          kubectl config get-contexts
-          kubectl config use-context $AKS_CLUSTER_NAME-admin
-          kubectl config current-context
-
-      # Check available nodes to ensure Kubernetes cluster is reachable
-      - name: Check available nodes
-        run: kubectl get nodes
-
-      # Build & Push Docker image to ACR
-      - name: Build & Push Docker image
-        run: |
-          docker build -t $ACR_REGISTRY_NAME.azurecr.io/$DOCKER_IMAGE_NAME_WEBAPP:$IMAGE_VERSION_WEBAPP .
-          docker push $ACR_REGISTRY_NAME.azurecr.io/$DOCKER_IMAGE_NAME_WEBAPP:$IMAGE_VERSION_WEBAPP
-          echo "Verifying repository images in ACR..."
-          az acr repository list --name $ACR_REGISTRY_NAME --output table
-        working-directory: src/webapp
-
-      # - name: ACR authentication with AKS
-      #   run: az aks update -n $AKS_CLUSTER_NAME -g $AKS_RESOURCE_GROUP --attach-acr $ACR_REGISTRY_NAME
-
-      - name: Create tfvars file from secrets & Print encrypted content
-        run: |
-          cat <<EOF > deployment/$TF_VAR_environment.tfvars
-          ${{ secrets.TFVARS }}
-          EOF
-          cat deployment/$TF_VAR_environment.tfvars
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      # Terraform Init before Second Plan
-      - name: Terraform Init (webapp/Helm)
-        run: terraform init
-        working-directory: deployment/shared
-
-      # Second Plan: Plan the Helm release changes (webapp)
-      - name: Terraform Plan (Helm release)
-        run: |
-          echo "KUBECONFIG is $KUBECONFIG"
-          echo "KUBE_CONFIG_PATH is $KUBE_CONFIG_PATH"
-          terraform plan -var-file="../$TF_VAR_environment.tfvars" -target=module.webapp -out=webapp.tfplan
-        working-directory: deployment/shared
-
-      # Second Apply: Apply the Helm release from the saved plan
-      - name: Terraform Apply (Helm release)
-        run: terraform apply -auto-approve webapp.tfplan
-        working-directory: deployment/shared
->>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
-=======
-          echo "TF_VAR_environment=$TF_VAR_environment" >> $GITHUB_ENV
-          echo "TF_VAR_subscription_id=$TF_VAR_subscription_id" >> $GITHUB_ENV
-        working-directory: azure-platform/deployment
->>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
-=======
-            "ACR_REGISTRY_NAME": "'$ACR_REGISTRY_NAME'"
-=======
-            "ACR_REGISTRY_NAME": "'$ACR_REGISTRY_NAME'",
-            "TF_VAR_environment": "'${{ matrix.environment }}'"
->>>>>>> 2e4e7e2 (Feat(cicd_new_design): Implement Full CI/CD Pipeline with Dynamic Environment Support and Reusable Actions (#44))
-          }' > ${{ github.workspace }}/infrastructure-outputs.json
-        working-directory: azure-platform/deployment
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4.4.3
-        with:
-          name: infra-outputs-${{ matrix.environment }}
-          path: ${{ github.workspace }}/infrastructure-outputs.json
->>>>>>> 7aaa899 (update(cicd): Use matrix strategy and exclude parameter to control the environment deployments (#42))

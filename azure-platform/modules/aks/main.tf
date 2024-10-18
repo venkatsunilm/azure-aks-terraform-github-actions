@@ -23,10 +23,6 @@ resource "azurerm_kubernetes_cluster" "aks" {
 }
 
 # https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/container_registry#example-usage-attaching-a-container-registry-to-a-kubernetes-cluster
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
 # resource "azurerm_role_assignment" "attach_acr_aks" {
 #   # principal_id                     = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
 #   principal_id                     = azurerm_kubernetes_cluster.aks.identity[0].principal_id
@@ -34,16 +30,4 @@ resource "azurerm_kubernetes_cluster" "aks" {
 #   scope                            = var.acr_registry_id
 #   skip_service_principal_aad_check = true
 # }
-<<<<<<< HEAD
-=======
-resource "azurerm_role_assignment" "attach_acr_aks" {
-  # principal_id                     = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
-  principal_id                     = azurerm_kubernetes_cluster.aks.identity[0].principal_id
-  role_definition_name             = "AcrPull"
-  scope                            = var.acr_registry_id
-  skip_service_principal_aad_check = true
-}
->>>>>>> 2c252cb (Refactor: refactoring the project as per the planned design (#28))
-=======
->>>>>>> 63b6df2 (Feat: Separate pipelines for infrastructure and app deployments (#33))
 
