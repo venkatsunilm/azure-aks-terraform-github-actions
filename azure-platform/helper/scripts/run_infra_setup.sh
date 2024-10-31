@@ -16,7 +16,7 @@ run_with_logging() {
     local script_path="$1"
     local log_file="$2"
     
-    echo "Running $script_path..."
+    echo "Running $script_path"
     source "$script_path"
 
     # Log output separately

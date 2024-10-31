@@ -8,37 +8,46 @@ resource "azurerm_resource_group" "acr_rg" {
   location = local.location
 }
 
-module "acr" {
-  source              = "../modules/acr"
-  registry_name       = local.registry_name
-  resource_group_name = azurerm_resource_group.acr_rg.name
-  location            = azurerm_resource_group.acr_rg.location
-  environment         = local.environment
-  subscription_id     = var.subscription_id
+module "avm-ptn-aks-production" {
+  source                          = "Azure/avm-ptn-aks-production/azurerm"
+  version                         = "0.1.0"
+  location                        = azurerm_resource_group.rg.location
+  name                            = local.cluster_name
+  resource_group_name             = azurerm_resource_group.rg.name
+  rbac_aad_admin_group_object_ids = ["11111111-2222-3333-4444-555555555555"]
 }
 
-module "aks" {
-  source              = "../modules/aks"
-  cluster_name        = local.cluster_name
-  node_count          = var.node_count
-  environment         = local.environment
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  dns_prefix          = local.dns_prefix
-  subscription_id     = var.subscription_id
-  acr_registry_id     = module.acr.acr_registry_id
-  # dns_prefix_private_cluster
-}
+# module "acr" {
+#   source              = "../modules/acr"
+#   registry_name       = local.registry_name
+#   resource_group_name = azurerm_resource_group.acr_rg.name
+#   location            = azurerm_resource_group.acr_rg.location
+#   environment         = local.environment
+#   subscription_id     = var.subscription_id
+# }
 
-module "networking" {
-  source              = "../modules/networking"
-  vnet_name           = local.vnet_name
-  subnet_name         = local.subnet_name
-  resource_group_name = azurerm_resource_group.rg.name
-  environment         = local.environment
-  location            = azurerm_resource_group.rg.location
-  subscription_id     = var.subscription_id
-}
+# module "aks" {
+#   source              = "../modules/aks"
+#   cluster_name        = local.cluster_name
+#   node_count          = var.node_count
+#   environment         = local.environment
+#   resource_group_name = azurerm_resource_group.rg.name
+#   location            = azurerm_resource_group.rg.location
+#   dns_prefix          = local.dns_prefix
+#   subscription_id     = var.subscription_id
+#   acr_registry_id     = module.acr.acr_registry_id
+#   # dns_prefix_private_cluster
+# }
+
+# module "networking" {
+#   source              = "../modules/networking"
+#   vnet_name           = local.vnet_name
+#   subnet_name         = local.subnet_name
+#   resource_group_name = azurerm_resource_group.rg.name
+#   environment         = local.environment
+#   location            = azurerm_resource_group.rg.location
+#   subscription_id     = var.subscription_id
+# }
 
 # Generate a random suffix for the storage account name
 # resource "random_string" "storage_suffix" {
