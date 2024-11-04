@@ -1,66 +1,98 @@
-resource "azurerm_resource_group" "rg" {
-  name     = local.resource_group_name
-  location = local.location
+# This is required for resource modules
+resource "azurerm_resource_group" "this" {
+  location = "westeurope" # Hardcoded because we have to test in a region with availability zones
+  name     = module.naming.resource_group.name_unique
 }
 
-resource "azurerm_resource_group" "acr_rg" {
-  name     = local.acr_resource_group_name
-  location = local.location
+
+# This ensures we have unique CAF compliant names for our resources.
+module "naming" {
+  source  = "Azure/naming/azurerm"
+  version = ">= 0.3.0"
 }
 
+resource "azurerm_user_assigned_identity" "this" {
+  location            = azurerm_resource_group.this.location
+  name                = "uami-${var.kubernetes_cluster_name}"
+  resource_group_name = azurerm_resource_group.this.name
+}
+
+# This is the module call
+# Do not specify location here due to the randomization above.
+# Leaving location as `null` will cause the module to use the resource group location
+# with a data source.
 module "avm-ptn-aks-production" {
-  source                          = "Azure/avm-ptn-aks-production/azurerm"
-  version                         = "0.1.0"
-  location                        = azurerm_resource_group.rg.location
-  name                            = local.cluster_name
-  resource_group_name             = azurerm_resource_group.rg.name
-  rbac_aad_admin_group_object_ids = ["11111111-2222-3333-4444-555555555555"]
+  source              = "Azure/avm-ptn-aks-production/azurerm"
+  kubernetes_version  = "1.28"
+  enable_telemetry    = var.enable_telemetry # see variables.tf
+  name                = module.naming.kubernetes_cluster.name_unique
+  resource_group_name = azurerm_resource_group.this.name
+
+  network = {
+    name                = module.avm_res_network_virtualnetwork.name
+    resource_group_name = azurerm_resource_group.this.name
+    node_subnet_id      = module.avm_res_network_virtualnetwork.subnets["subnet"].resource_id
+    pod_cidr            = "192.168.0.0/16"
+    acr = {
+      name                          = module.naming.container_registry.name_unique
+      subnet_resource_id            = module.avm_res_network_virtualnetwork.subnets["private_link_subnet"].resource_id
+      private_dns_zone_resource_ids = [azurerm_private_dns_zone.this.id]
+    }
+  }
+  managed_identities = {
+    user_assigned_resource_ids = [
+      azurerm_user_assigned_identity.this.id
+    ]
+  }
+
+  location = "westeurope" # Hardcoded because we have to test in a region with availability zones
+  node_pools = {
+    workload = {
+      name                 = "workloadworkload"
+      vm_size              = "Standard_D2d_v5"
+      orchestrator_version = "1.28"
+      max_count            = 3
+      min_count            = 2
+      os_sku               = "Ubuntu"
+      mode                 = "User"
+      os_disk_size_gb      = 128
+    },
+    ingress = {
+      name                 = "ingress"
+      vm_size              = "Standard_D2d_v5"
+      orchestrator_version = "1.28"
+      max_count            = 4
+      min_count            = 2
+      os_sku               = "Ubuntu"
+      mode                 = "User"
+      os_disk_size_gb      = 128
+
+    }
+  }
 }
 
-# module "acr" {
-#   source              = "../modules/acr"
-#   registry_name       = local.registry_name
-#   resource_group_name = azurerm_resource_group.acr_rg.name
-#   location            = azurerm_resource_group.acr_rg.location
-#   environment         = local.environment
-#   subscription_id     = var.subscription_id
-# }
 
-# module "aks" {
-#   source              = "../modules/aks"
-#   cluster_name        = local.cluster_name
-#   node_count          = var.node_count
-#   environment         = local.environment
-#   resource_group_name = azurerm_resource_group.rg.name
-#   location            = azurerm_resource_group.rg.location
-#   dns_prefix          = local.dns_prefix
-#   subscription_id     = var.subscription_id
-#   acr_registry_id     = module.acr.acr_registry_id
-#   # dns_prefix_private_cluster
-# }
+resource "azurerm_private_dns_zone" "this" {
+  name                = "privatelink.azurecr.io"
+  resource_group_name = azurerm_resource_group.this.name
+}
 
-# module "networking" {
-#   source              = "../modules/networking"
-#   vnet_name           = local.vnet_name
-#   subnet_name         = local.subnet_name
-#   resource_group_name = azurerm_resource_group.rg.name
-#   environment         = local.environment
-#   location            = azurerm_resource_group.rg.location
-#   subscription_id     = var.subscription_id
-# }
+module "avm_res_network_virtualnetwork" {
+  source  = "Azure/avm-res-network-virtualnetwork/azurerm"
+  version = "0.2.3"
 
-# Generate a random suffix for the storage account name
-# resource "random_string" "storage_suffix" {
-#   length  = 6
-#   special = false
-#   upper   = false
-# }
-
-# module "storage" {
-#   source               = "../modules/storage"
-#   storage_account_name = local.storage_account_name
-#   resource_group_name  = azurerm_resource_group.rg.name
-#   environment          = local.environment
-#   location             = azurerm_resource_group.rg.location
-#   subscription_id      = var.subscription_id
-# }
+  address_space       = ["10.31.0.0/16"]
+  location            = azurerm_resource_group.this.location
+  name                = "myvnet"
+  resource_group_name = azurerm_resource_group.this.name
+  subnets = {
+    "subnet" = {
+      name             = "nodecidr"
+      address_prefixes = ["10.31.0.0/17"]
+    }
+    "private_link_subnet" = {
+      name             = "private_link_subnet"
+      address_prefixes = ["10.31.129.0/24"]
+    }
+  }
+}

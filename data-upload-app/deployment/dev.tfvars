@@ -1,4 +1,4 @@
-location    = "East US"
+location    = "Westeurope"
 environment = "dev"
 
 

@@ -1,2 +1,2 @@
-location    = "East US"
+location    = "Westeurope"
 environment = "prod"

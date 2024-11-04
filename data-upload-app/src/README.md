@@ -15,7 +15,7 @@ az acr create --resource-group rg-acr-dev --name venkatsunilm --sku Basic
 # Push Docker Image to Container Registry:
 
 docker tag data-upload-app venkatsunilm.azurecr.io/data-upload-app:latest
-docker push venkatsunilm.azurecr.io/data-upload-app:latest
+docker push venkatsunilmdev.azurecr.io/data-upload-app:latest
 
 <!-- acr_registry_name = "venkatsunilm"
 aks_cluster_name = "aks-dev"
